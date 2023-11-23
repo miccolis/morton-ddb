@@ -1,0 +1,5 @@
+*.swp
+.parcel-cache
+.tap
+node_modules
+dist

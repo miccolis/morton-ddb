@@ -1,0 +1,51 @@
+Morton DDB
+----------
+
+Related reading https://aws.amazon.com/blogs/database/z-order-indexing-for-multifaceted-queries-in-amazon-dynamodb-part-1/
+
+
+GET    /d/<domain-id>/item - Returns all features
+POST   /d/<domain-id>/item - Create a new feature
+
+GET    /d/<domain-id>/item/<item-uuid> - Not implemented
+PATCH  /d/<domain-id>/item/<item-uuid> - Not implemented
+DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
+
+GET    /d/<domain-id>/query?bbox=<minx>,<miny>,<maxx>,<maxy> - Query for features in a bounding box
+GET    /d/<domain-id>/query?point=<x>,<y> - Not implemented
+
+## Indexing
+
+https://docs.mapbox.com/help/glossary/zoom-level/
+
+
+## Development
+
+https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
+
+
+## Tests
+
+### Prerequisites
+
+Test suits assumes you've got Docker available so that it can run "DynamoDB Local". It will also attempt to use port 8000 for the same.
+
+#### Notes on avoiding Docker Desktop
+
+If you're on newer, non-intel, Mac you may want to use `lima` to manage a VM for Docker. After installing w/ brew that looks something like:
+
+  limactl start template://docker
+  docker context create lima-docker --docker "host=unix:///Users/<myusername>/.lima/docker/sock/docker.sock"
+  docker context use lima-docker
+
+#### Notes on DynamoDB Local
+
+```
+docker run -d --rm -p 8000:8000 amazon/dynamodb-local:latest \
+  -jar DynamoDBLocal.jar \
+  -disableTelemetry \
+  -inMemory  \
+  -sharedDb
+```
+
+`aws --endpoint-url http://localhost:8000 dynamodb scan --table-name test`
