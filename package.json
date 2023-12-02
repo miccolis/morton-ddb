@@ -1,58 +1,58 @@
 {
-  "name": "morton-ddb",
-  "version": "1.0.0",
-  "description": "Morton DDB",
-  "type": "module",
-  "main": "index.js",
-  "dist": "dist/index.js",
-  "source": "index.js",
-  "engines": {
-    "node": "20.x"
-  },
-  "targets": {
-    "dist": {
-      "context": "node",
-      "outputFormat": "esmodule",
-      "includeNodeModules": true
+    "name": "morton-ddb",
+    "version": "1.0.0",
+    "description": "Morton DDB",
+    "type": "module",
+    "main": "index.js",
+    "dist": "dist/index.js",
+    "source": "index.js",
+    "engines": {
+        "node": "20.x"
+    },
+    "targets": {
+        "dist": {
+            "context": "node",
+            "outputFormat": "esmodule",
+            "includeNodeModules": true
+        }
+    },
+    "scripts": {
+        "lint": "eslint index.js lib/*.js",
+        "format": "prettier --write .",
+        "check": "tsc",
+        "pretest": "IS_TEST_RUN=1 node tests/before.js",
+        "test": "IS_TEST_RUN=1 tap tests/*.test.js",
+        "bundle": "parcel build --target dist"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.454.0",
+        "@aws-sdk/lib-dynamodb": "^3.454.0",
+        "@mapbox/tile-cover": "^3.0.2",
+        "@turf/boolean-disjoint": "^6.5.0",
+        "morton": "^1.0.2",
+        "path-to-regexp": "^6.2.1",
+        "tilebelt": "^1.0.1",
+        "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.129",
+        "@types/node": "^20.9.4",
+        "eslint": "^8.54.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-n": "^16.3.1",
+        "eslint-plugin-promise": "^6.1.1",
+        "node-fetch": "^3.3.2",
+        "parcel": "^2.10.3",
+        "prettier": "3.1.0",
+        "tap": "^18.6.1",
+        "typescript": "^5.3.2"
+    },
+    "tap": {
+        "plugin": [
+            "!@tapjs/typescript"
+        ]
     }
-  },
-  "scripts": {
-    "lint": "eslint index.js lib/*.js",
-    "format": "prettier --write .",
-    "check": "tsc",
-    "pretest": "IS_TEST_RUN=1 node tests/before.js",
-    "test": "IS_TEST_RUN=1 tap tests/*.test.js",
-    "bundle": "parcel build --target dist"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.454.0",
-    "@aws-sdk/lib-dynamodb": "^3.454.0",
-    "@mapbox/tile-cover": "^3.0.2",
-    "@turf/boolean-disjoint": "^6.5.0",
-    "morton": "^1.0.2",
-    "path-to-regexp": "^6.2.1",
-    "tilebelt": "^1.0.1",
-    "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.129",
-    "@types/node": "^20.9.4",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-n": "^16.3.1",
-    "eslint-plugin-promise": "^6.1.1",
-    "node-fetch": "^3.3.2",
-    "parcel": "^2.10.3",
-    "prettier": "3.1.0",
-    "tap": "^18.6.1",
-    "typescript": "^5.3.2"
-  },
-  "tap": {
-    "plugin": [
-      "!@tapjs/typescript"
-    ]
-  }
 }

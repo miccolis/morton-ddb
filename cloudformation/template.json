@@ -1,0 +1,59 @@
+{
+    "Resources": {
+        "DynamoDBTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": {
+                    "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "data"]]
+                },
+                "BillingMode": "PAY_PER_REQUEST",
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "partition",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "sort",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "indexedDomain",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "morton",
+                        "AttributeType": "N"
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": "partition",
+                        "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "sort",
+                        "KeyType": "RANGE"
+                    }
+                ],
+                "GlobalSecondaryIndexes": [
+                    {
+                        "IndexName": "QueryByZoom",
+                        "KeySchema": [
+                            {
+                                "AttributeName": "indexedDomain",
+                                "KeyType": "HASH"
+                            },
+                            {
+                                "AttributeName": "morton",
+                                "KeyType": "RANGE"
+                            }
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

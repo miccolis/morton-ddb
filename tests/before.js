@@ -8,8 +8,11 @@ import {
 
 async function before() {
   const schema = JSON.parse(
-    await readFile(new URL("../schema/dynamodb.json", import.meta.url), "utf8"),
-  );
+    await readFile(
+      new URL("../cloudformation/template.json", import.meta.url),
+      "utf8",
+    ),
+  ).Resources.DynamoDBTable.Properties;
 
   schema.TableName = "test";
   schema.ProvisionedThroughput = {
