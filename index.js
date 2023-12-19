@@ -3,6 +3,8 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 import { loadConfig } from "./lib/config.js";
+import { domainCreateHandler } from "./lib/domainCreateHandler.js";
+import { domainGetHandler } from "./lib/domainGetHandler.js";
 import { itemCreateHandler } from "./lib/itemCreateHandler.js";
 import { itemDeleteHandler } from "./lib/itemDeleteHandler.js";
 import { itemListHandler } from "./lib/itemListHandler.js";
@@ -17,13 +19,15 @@ import { itemQueryHandler } from "./lib/itemQueryHandler.js";
 
 /** @type {Array<[PathHandler, string, string]>} */
 const pathHandlers = [
+  [domainGetHandler, "GET", "/d/:domain"],
+  [domainCreateHandler, "PUT", "/d/:domain"],
   [itemListHandler, "GET", "/d/:domain/item"],
   [itemCreateHandler, "POST", "/d/:domain/item"],
   [itemDeleteHandler, "DELETE", "/d/:domain/item/:item"],
   [itemQueryHandler, "GET", "/d/:domain/query"],
 ];
 
-/** @type {Array<[function, string, import('path-to-regexp').MatchFunction]>} */
+/** @type {Array<[PathHandler, string, import('path-to-regexp').MatchFunction]>} */
 const compiledPaths = pathHandlers.map(([handler, method, path]) => {
   return [handler, method, match(path, { decode: decodeURIComponent })];
 });

@@ -2,8 +2,8 @@ Morton DDB
 ----------
 
 
-GET    /d/<domain-id> - Not implemented
-PUT    /d/<domain-id> - Not implemented
+GET    /d/<domain-id> - Get a domain
+PUT    /d/<domain-id> - Create a domain
 PATCH  /d/<domain-id> - Not implemented
 
 GET    /d/<domain-id>/item - Returns all features

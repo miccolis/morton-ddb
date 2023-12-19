@@ -3,6 +3,7 @@ import t from "tap";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { itemCreateHandler } from "../lib/itemCreateHandler.js";
+import { domainCreateHandler } from "../lib/domainCreateHandler.js";
 import { loadConfig } from "../lib/config.js";
 
 import { itemQueryHandler } from "../lib/itemQueryHandler.js";
@@ -36,6 +37,13 @@ t.test("itemQueryHandler - fetch point", async (t) => {
       },
     },
   ];
+
+  await domainCreateHandler({
+    params: { domain },
+    event: { requestContext: { body: JSON.stringify({ name: domain }) } },
+    ddbClient,
+    config: { dynamodbTableName, zooms },
+  });
 
   for (const f of features) {
     await itemCreateHandler({
