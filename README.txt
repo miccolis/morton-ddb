@@ -1,8 +1,10 @@
 Morton DDB
 ----------
 
-Related reading https://aws.amazon.com/blogs/database/z-order-indexing-for-multifaceted-queries-in-amazon-dynamodb-part-1/
 
+GET    /d/<domain-id> - Not implemented
+PUT    /d/<domain-id> - Not implemented
+PATCH  /d/<domain-id> - Not implemented
 
 GET    /d/<domain-id>/item - Returns all features
 POST   /d/<domain-id>/item - Create a new feature
@@ -18,17 +20,23 @@ GET    /d/<domain-id>/query?point=<x>,<y> - Not implemented
 
 https://docs.mapbox.com/help/glossary/zoom-level/
 
+Related reading https://aws.amazon.com/blogs/database/z-order-indexing-for-multifaceted-queries-in-amazon-dynamodb-part-1/
+
 
 ## Development
 
 https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
+
+## Deployment
+
+aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name morton-test --no-execute-changeset
 
 
 ## Tests
 
 ### Prerequisites
 
-Test suits assumes you've got Docker available so that it can run "DynamoDB Local". It will also attempt to use port 8000 for the same.
+Test suite assumes you've got Docker available so that it can run "DynamoDB Local". It will also attempt to use port 8000 for the same.
 
 #### Notes on avoiding Docker Desktop
 
