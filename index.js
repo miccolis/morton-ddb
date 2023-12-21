@@ -43,6 +43,16 @@ export const handler = async function (event /*, context */) {
     process.env.IS_TEST_RUN,
   );
 
+  if (config.mode !== "read_write" && requestContext.http.method !== "GET") {
+    return {
+      statusCode: 403,
+      body: JSON.stringify({ message: "Forbidden" }),
+      headers: {
+        "content-type": "application/json",
+      },
+    };
+  }
+
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );

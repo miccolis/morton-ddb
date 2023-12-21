@@ -5,6 +5,7 @@ export type Config = {
   dynamodbClientConfig: {
     endpoint: string;
   };
+  mode: string;
   zooms: Array<number>;
 };
 
