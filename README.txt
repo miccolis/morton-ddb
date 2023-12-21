@@ -16,6 +16,14 @@ DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
 GET    /d/<domain-id>/query?bbox=<minx>,<miny>,<maxx>,<maxy> - Query for features in a bounding box
 GET    /d/<domain-id>/query?point=<x>,<y> - Not implemented
 
+## Configuration
+
+Environment variable | Description | Example
+--- | --- | ---
+DYNAMODB_TABLE_NAME | DynamoDB table name | `my-table`
+DYNAMODB_ENDPOINT | Overrides the default DynamoDB endpoint, useful for local testing | `http://localhost:8000`
+ZOOMS | At what zoom levels data will be indexed, comma separted list | `12`
+
 ## Indexing
 
 https://docs.mapbox.com/help/glossary/zoom-level/
