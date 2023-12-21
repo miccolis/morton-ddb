@@ -4,7 +4,8 @@
         "browser": true,
         "es2021": true
     },
-    "plugins": [],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
     "extends": ["eslint:recommended", "plugin:n/recommended", "prettier"],
     "parserOptions": {
         "ecmaVersion": "latest",
