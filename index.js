@@ -2,6 +2,7 @@ import { match } from "path-to-regexp";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
+import { HttpError } from "./lib/helpers.js";
 import { loadConfig } from "./lib/config.js";
 import { domainCreateHandler } from "./lib/domainCreateHandler.js";
 import { domainGetHandler } from "./lib/domainGetHandler.js";
@@ -44,13 +45,7 @@ export const handler = async function (event /*, context */) {
   );
 
   if (config.mode !== "read_write" && requestContext.http.method !== "GET") {
-    return {
-      statusCode: 403,
-      body: JSON.stringify({ message: "Forbidden" }),
-      headers: {
-        "content-type": "application/json",
-      },
-    };
+    return new HttpError(403).value();
   }
 
   const ddbClient = DynamoDBDocumentClient.from(
@@ -71,22 +66,14 @@ export const handler = async function (event /*, context */) {
           config,
         });
       } catch (err) {
-        console.error(err);
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ message: "Internal Server Error" }),
-          headers: {
-            "content-type": "application/json",
-          },
-        };
+        if (err instanceof HttpError) {
+          return err.value();
+        } else {
+          console.error(err);
+          return new HttpError(500).value();
+        }
       }
     }
   }
-  return {
-    statusCode: 404,
-    body: JSON.stringify({ message: "Not Found" }),
-    headers: {
-      "content-type": "application/json",
-    },
-  };
+  return new HttpError(404).value();
 };

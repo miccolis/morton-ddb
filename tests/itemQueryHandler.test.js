@@ -40,7 +40,11 @@ t.test("itemQueryHandler - fetch point", async (t) => {
 
   await domainCreateHandler({
     params: { domain },
-    event: { requestContext: { body: JSON.stringify({ name: domain, access: 'public' }) } },
+    event: {
+      requestContext: {
+        body: JSON.stringify({ name: domain, access: "public" }),
+      },
+    },
     ddbClient,
     config: { dynamodbTableName, zooms },
   });
