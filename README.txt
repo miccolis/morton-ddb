@@ -22,7 +22,8 @@ Environment variable | Description | Example
 --- | --- | ---
 DYNAMODB_TABLE_NAME | DynamoDB table name | `my-table`
 DYNAMODB_ENDPOINT | Overrides the default DynamoDB endpoint, useful for local testing | `http://localhost:8000`
-ZOOMS | At what zoom levels data will be indexed, comma separted list | `12`
+ZOOMS | At what zoom level data will be indexed | `12`
+MODE | Set to `read_wite` to enable write access. Defaults to `read_only` | `read_write'
 
 ## Indexing
 
