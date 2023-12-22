@@ -54,6 +54,92 @@
                     }
                 ]
             }
+        },
+        "PublicReadLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Role": { "Fn::GetAtt": ["PublicReadRole", "Arn"] },
+                "Handler": "index.handler",
+                "Code": {
+                    "ZipFile": "module.exports = { handler: function() { return 'hello world'; } }"
+                },
+                "Runtime": "nodejs20.x",
+                "Environment": {
+                    "Variables": {
+                        "DYNAMODB_TABLE_NAME": { "Ref": "DynamoDBTable" },
+                        "ZOOMS": "12"
+                    }
+                }
+            }
+        },
+        "PublicReadUrl": {
+            "Type" : "AWS::Lambda::Url",
+            "Properties" : {
+                "AuthType": "NONE",
+                "TargetFunctionArn": { "Ref": "PublicReadLambda" },
+                "Cors": {
+                    "AllowMethods": ["GET"],
+                    "AllowOrigins": ["*"]
+                }
+            }
+        },
+        "PublicReadPermission": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "Action": "lambda:InvokeFunctionUrl",
+                "FunctionName":  { "Ref": "PublicReadLambda" },
+                "FunctionUrlAuthType": "NONE",
+                "Principal": "*"
+            }
+        },
+        "PublicReadRole": {
+            "Type" : "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "AllowDynamoRead",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Sid": "DynamoReadAccess",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:BatchGetItem",
+                                        "dynamodb:GetItem",
+                                        "dynamodb:Query"
+                                    ],
+                                    "Resource": {
+                                        "Fn::Sub": "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBTable}*"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
+
     }
 }

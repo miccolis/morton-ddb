@@ -38,7 +38,7 @@ https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
 
 ## Deployment
 
-aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name morton-test --no-execute-changeset
+aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name morton-test --no-execute-changeset --capabilities CAPABILITY_IAM
 
 
 ## Tests
