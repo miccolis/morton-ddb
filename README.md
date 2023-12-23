@@ -2,6 +2,7 @@ Morton DDB
 ----------
 
 
+```
 GET    /d/<domain-id> - Get a domain
 PUT    /d/<domain-id> - Create a domain
 PATCH  /d/<domain-id> - Not implemented
@@ -15,6 +16,7 @@ DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
 
 GET    /d/<domain-id>/query?bbox=<minx>,<miny>,<maxx>,<maxy> - Query for features in a bounding box
 GET    /d/<domain-id>/query?point=<x>,<y> - Not implemented
+```
 
 ## Configuration
 
@@ -38,11 +40,15 @@ https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
 
 ## Deployment
 
-aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name morton-test --no-execute-changeset --capabilities CAPABILITY_IAM
+```
+export STACK_NAME=morton-test
+aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name $STACK_NAME --no-execute-changeset --capabilities CAPABILITY_IAM
 
-aws cloudformation describe-stacks --stack-name 'morton-test' | jq '.Stacks[0].Outputs[0].OutputValue'
+export STACK_NAME=morton-test
+export FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`PublicReadLambdaArn`].OutputValue' --output text)
 
 aws lambda update-function-code --function-name $FUNCTION_ARN --zip-file fileb://dist/bundle.zip
+```
 
 ## Tests
 
