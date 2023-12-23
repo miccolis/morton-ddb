@@ -40,6 +40,9 @@ https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
 
 aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name morton-test --no-execute-changeset --capabilities CAPABILITY_IAM
 
+aws cloudformation describe-stacks --stack-name 'morton-test' | jq '.Stacks[0].Outputs[0].OutputValue'
+
+aws lambda update-function-code --function-name $FUNCTION_ARN --zip-file fileb://dist/bundle.zip
 
 ## Tests
 

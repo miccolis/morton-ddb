@@ -140,6 +140,12 @@
                 ]
             }
         }
-
+    },
+    "Outputs": {
+        "PublicReadLambdaArn" : {
+            "Description" : "Information about the value",
+            "Value" : { "Fn::GetAtt": ["PublicReadLambda", "Arn"] }
+        }
     }
+
 }
