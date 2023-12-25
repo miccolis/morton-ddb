@@ -1,6 +1,4 @@
-Morton DDB
-----------
-
+## Morton DDB
 
 ```
 GET    /d/<domain-id> - Get a domain
@@ -20,19 +18,18 @@ GET    /d/<domain-id>/query?point=<x>,<y> - Not implemented
 
 ## Configuration
 
-Environment variable | Description | Example
---- | --- | ---
-DYNAMODB_TABLE_NAME | DynamoDB table name | `my-table`
-DYNAMODB_ENDPOINT | Overrides the default DynamoDB endpoint, useful for local testing | `http://localhost:8000`
-ZOOMS | At what zoom level data will be indexed | `12`
-MODE | Set to `read_wite` to enable write access. Defaults to `read_only` | `read_write'
+| Environment variable | Description                                                        | Example                 |
+| -------------------- | ------------------------------------------------------------------ | ----------------------- |
+| DYNAMODB_TABLE_NAME  | DynamoDB table name                                                | `my-table`              |
+| DYNAMODB_ENDPOINT    | Overrides the default DynamoDB endpoint, useful for local testing  | `http://localhost:8000` |
+| ZOOMS                | At what zoom level data will be indexed                            | `12`                    |
+| MODE                 | Set to `read_wite` to enable write access. Defaults to `read_only` | `read_write'            |
 
 ## Indexing
 
 https://docs.mapbox.com/help/glossary/zoom-level/
 
 Related reading https://aws.amazon.com/blogs/database/z-order-indexing-for-multifaceted-queries-in-amazon-dynamodb-part-1/
-
 
 ## Development
 
@@ -60,9 +57,11 @@ Test suite assumes you've got Docker available so that it can run "DynamoDB Loca
 
 If you're on newer, non-intel, Mac you may want to use `lima` to manage a VM for Docker. After installing w/ brew that looks something like:
 
-  limactl start template://docker
-  docker context create lima-docker --docker "host=unix:///Users/<myusername>/.lima/docker/sock/docker.sock"
-  docker context use lima-docker
+```
+limactl start template://docker
+docker context create lima-docker --docker "host=unix:///Users/<myusername>/.lima/docker/sock/docker.sock"
+docker context use lima-docker
+```
 
 #### Notes on DynamoDB Local
 

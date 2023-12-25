@@ -73,8 +73,8 @@
             }
         },
         "PublicReadUrl": {
-            "Type" : "AWS::Lambda::Url",
-            "Properties" : {
+            "Type": "AWS::Lambda::Url",
+            "Properties": {
                 "AuthType": "NONE",
                 "TargetFunctionArn": { "Ref": "PublicReadLambda" },
                 "Cors": {
@@ -87,13 +87,13 @@
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "Action": "lambda:InvokeFunctionUrl",
-                "FunctionName":  { "Ref": "PublicReadLambda" },
+                "FunctionName": { "Ref": "PublicReadLambda" },
                 "FunctionUrlAuthType": "NONE",
                 "Principal": "*"
             }
         },
         "PublicReadRole": {
-            "Type" : "AWS::IAM::Role",
+            "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
                     "Version": "2012-10-17",
@@ -142,10 +142,9 @@
         }
     },
     "Outputs": {
-        "PublicReadLambdaArn" : {
-            "Description" : "Information about the value",
-            "Value" : { "Fn::GetAtt": ["PublicReadLambda", "Arn"] }
+        "PublicReadLambdaArn": {
+            "Description": "Information about the value",
+            "Value": { "Fn::GetAtt": ["PublicReadLambda", "Arn"] }
         }
     }
-
 }
