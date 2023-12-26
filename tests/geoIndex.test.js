@@ -16,17 +16,14 @@ t.test("buildTileIndex - point", (t) => {
   t.end();
 });
 
-// TODO fix these
-t.skip("buildTileIndex - line", (t) => {
+t.test("buildTileIndex - line", (t) => {
   const feature = {
     type: "Feature",
     properties: {},
     geometry: {
       coordinates: [
-        [
-          [-74.334, 40.928],
-          [-74.334, 40.493],
-        ],
+        [-74.334, 40.928],
+        [-74.334, 40.493],
       ],
       type: "LineString",
     },

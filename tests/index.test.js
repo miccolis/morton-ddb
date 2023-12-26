@@ -48,7 +48,7 @@ t.test("handler - listing route", async (t) => {
     asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
   );
 
-  const resp = await handler(asRequestContext('GET', `/d/${domainId}/item`));
+  const resp = await handler(asRequestContext("GET", `/d/${domainId}/item`));
   t.equal(
     JSON.stringify(resp),
     JSON.stringify({
@@ -76,7 +76,9 @@ t.test("handler - create route", async (t) => {
     },
   };
 
-  const resp = await handler(asRequestContext('POST', `/d/${domainId}/item`, item));
+  const resp = await handler(
+    asRequestContext("POST", `/d/${domainId}/item`, item),
+  );
   t.same(resp.properties, item.properties);
   t.same(resp.geometry, item.geometry);
   t.equal(resp.version, 1);
@@ -89,7 +91,9 @@ t.test("handler - delete route", async (t) => {
     asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
   );
 
-  const resp = await handler(asRequestContext('DELETE', `/d/${domainId}/item/test-item`));
+  const resp = await handler(
+    asRequestContext("DELETE", `/d/${domainId}/item/test-item`),
+  );
   t.same(resp.statusCode, 404);
 
   const item = {
@@ -102,9 +106,13 @@ t.test("handler - delete route", async (t) => {
       coordinates: [0, 0],
     },
   };
-  const { itemId }= await handler(asRequestContext('POST', `/d/${domainId}/item`, item));
+  const { itemId } = await handler(
+    asRequestContext("POST", `/d/${domainId}/item`, item),
+  );
 
-  const resp3 = await handler(asRequestContext('DELETE', `/d/${domainId}/item/${itemId}`));
+  const resp3 = await handler(
+    asRequestContext("DELETE", `/d/${domainId}/item/${itemId}`),
+  );
   t.same(resp3, {});
 });
 
