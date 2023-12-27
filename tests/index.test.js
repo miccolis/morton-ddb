@@ -85,8 +85,8 @@ t.test("handler - create route", async (t) => {
   t.ok(resp.itemId);
 });
 
-t.test("handler - delete route", async (t) => {
-  const domainId = "handler-delete-route";
+t.test("handler - item routes", async (t) => {
+  const domainId = "handler-item-routes";
   await handler(
     asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
   );
@@ -111,9 +111,26 @@ t.test("handler - delete route", async (t) => {
   );
 
   const resp3 = await handler(
+    asRequestContext("GET", `/d/${domainId}/item/${itemId}`),
+  );
+  t.same(resp3, {
+    domainId: "handler-item-routes",
+    itemId,
+    version: 1,
+    type: "Feature",
+    properties: {
+      name: "Null island",
+    },
+    geometry: {
+      type: "Point",
+      coordinates: [0, 0],
+    },
+  });
+
+  const resp4 = await handler(
     asRequestContext("DELETE", `/d/${domainId}/item/${itemId}`),
   );
-  t.same(resp3, {});
+  t.same(resp4, {});
 });
 
 t.test("handler - query route", async (t) => {

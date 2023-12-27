@@ -8,7 +8,7 @@ PATCH  /d/<domain-id> - Not implemented
 GET    /d/<domain-id>/item - Returns all features
 POST   /d/<domain-id>/item - Create a new feature
 
-GET    /d/<domain-id>/item/<item-uuid> - Not implemented
+GET    /d/<domain-id>/item/<item-uuid> - Get a single feature
 PATCH  /d/<domain-id>/item/<item-uuid> - Not implemented
 DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
 

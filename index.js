@@ -8,6 +8,7 @@ import { domainCreateHandler } from "./lib/domainCreateHandler.js";
 import { domainGetHandler } from "./lib/domainGetHandler.js";
 import { itemCreateHandler } from "./lib/itemCreateHandler.js";
 import { itemDeleteHandler } from "./lib/itemDeleteHandler.js";
+import { itemGetHandler } from "./lib/itemGetHandler.js";
 import { itemListHandler } from "./lib/itemListHandler.js";
 import { itemQueryHandler } from "./lib/itemQueryHandler.js";
 
@@ -24,6 +25,7 @@ const pathHandlers = [
   [domainCreateHandler, "PUT", "/d/:domain"],
   [itemListHandler, "GET", "/d/:domain/item"],
   [itemCreateHandler, "POST", "/d/:domain/item"],
+  [itemGetHandler, "GET", "/d/:domain/item/:item"],
   [itemDeleteHandler, "DELETE", "/d/:domain/item/:item"],
   [itemQueryHandler, "GET", "/d/:domain/query"],
 ];
