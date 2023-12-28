@@ -40,6 +40,14 @@ export type Domain = {
   version?: number;
 };
 
+export type Item = {
+  itemId: string;
+  type: string;
+  properties?: Record<string, any>;
+  geomerty: any;
+  version?: number;
+};
+
 // Typescript definition of UpdateCommandInpute is picky, but this satisfies
 export type DynamoDBReturnValue =
   | "ALL_NEW"

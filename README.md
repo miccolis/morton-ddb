@@ -9,7 +9,7 @@ GET    /d/<domain-id>/item - Returns all features
 POST   /d/<domain-id>/item - Create a new feature
 
 GET    /d/<domain-id>/item/<item-uuid> - Get a single feature
-PATCH  /d/<domain-id>/item/<item-uuid> - Not implemented
+PATCH  /d/<domain-id>/item/<item-uuid> - Update a single feature
 DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
 
 GET    /d/<domain-id>/query?bbox=<minx>,<miny>,<maxx>,<maxy> - Query for features in a bounding box

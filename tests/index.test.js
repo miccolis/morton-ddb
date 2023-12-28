@@ -160,9 +160,31 @@ t.test("handler - item lifecycle routes", async (t) => {
   });
 
   const resp4 = await handler(
+    asRequestContext("PATCH", `/d/${domainId}/item/${itemId}`, {
+      version: 1,
+      properties: {
+        name: "Skull island",
+      },
+    }),
+  );
+  t.same(resp4, {
+    domainId,
+    itemId,
+    version: 2,
+    type: "Feature",
+    properties: {
+      name: "Skull island",
+    },
+    geometry: {
+      type: "Point",
+      coordinates: [0, 0],
+    },
+  });
+
+  const resp5 = await handler(
     asRequestContext("DELETE", `/d/${domainId}/item/${itemId}`),
   );
-  t.same(resp4, {});
+  t.same(resp5, {});
 });
 
 t.test("handler - query route", async (t) => {

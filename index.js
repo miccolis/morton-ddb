@@ -11,6 +11,7 @@ import { itemCreateHandler } from "./lib/itemCreateHandler.js";
 import { itemDeleteHandler } from "./lib/itemDeleteHandler.js";
 import { itemGetHandler } from "./lib/itemGetHandler.js";
 import { itemListHandler } from "./lib/itemListHandler.js";
+import { itemUpdateHandler } from "./lib/itemUpdateHandler.js";
 import { itemQueryHandler } from "./lib/itemQueryHandler.js";
 
 /**
@@ -22,14 +23,15 @@ import { itemQueryHandler } from "./lib/itemQueryHandler.js";
 
 /** @type {Array<[PathHandler, string, string]>} */
 const pathHandlers = [
+  [itemQueryHandler, "GET", "/d/:domain/query"],
+  [itemCreateHandler, "POST", "/d/:domain/item"],
+  [itemGetHandler, "GET", "/d/:domain/item/:item"],
+  [itemUpdateHandler, "PATCH", "/d/:domain/item/:item"],
+  [itemDeleteHandler, "DELETE", "/d/:domain/item/:item"],
+  [itemListHandler, "GET", "/d/:domain/item"],
   [domainGetHandler, "GET", "/d/:domain"],
   [domainCreateHandler, "PUT", "/d/:domain"],
   [domainUpdateHandler, "PATCH", "/d/:domain"],
-  [itemListHandler, "GET", "/d/:domain/item"],
-  [itemCreateHandler, "POST", "/d/:domain/item"],
-  [itemGetHandler, "GET", "/d/:domain/item/:item"],
-  [itemDeleteHandler, "DELETE", "/d/:domain/item/:item"],
-  [itemQueryHandler, "GET", "/d/:domain/query"],
 ];
 
 /** @type {Array<[PathHandler, string, import('path-to-regexp').MatchFunction]>} */
