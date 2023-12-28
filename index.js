@@ -6,6 +6,7 @@ import { HttpError } from "./lib/helpers.js";
 import { loadConfig } from "./lib/config.js";
 import { domainCreateHandler } from "./lib/domainCreateHandler.js";
 import { domainGetHandler } from "./lib/domainGetHandler.js";
+import { domainUpdateHandler } from "./lib/domainUpdateHandler.js";
 import { itemCreateHandler } from "./lib/itemCreateHandler.js";
 import { itemDeleteHandler } from "./lib/itemDeleteHandler.js";
 import { itemGetHandler } from "./lib/itemGetHandler.js";
@@ -23,6 +24,7 @@ import { itemQueryHandler } from "./lib/itemQueryHandler.js";
 const pathHandlers = [
   [domainGetHandler, "GET", "/d/:domain"],
   [domainCreateHandler, "PUT", "/d/:domain"],
+  [domainUpdateHandler, "PATCH", "/d/:domain"],
   [itemListHandler, "GET", "/d/:domain/item"],
   [itemCreateHandler, "POST", "/d/:domain/item"],
   [itemGetHandler, "GET", "/d/:domain/item/:item"],
@@ -43,7 +45,7 @@ export const handler = async function (event /*, context */) {
   const { requestContext } = event;
 
   const { dynamodbClientConfig, ...config } = loadConfig(
-    process.env.IS_TEST_RUN,
+    !!process.env.IS_TEST_RUN,
   );
 
   if (config.mode !== "read_write" && requestContext.http.method !== "GET") {

@@ -31,3 +31,19 @@ export type Response =
   | Omit<object, "statusCode">;
 
 export type PathHandler = (PathHandlerOptions) => Response;
+
+export type Domain = {
+  domainId?: string;
+  name: string;
+  access: "public" | "private";
+  ttl?: number;
+  version?: number;
+};
+
+// Typescript definition of UpdateCommandInpute is picky, but this satisfies
+export type DynamoDBReturnValue =
+  | "ALL_NEW"
+  | "ALL_OLD"
+  | "NONE"
+  | "UPDATED_NEW"
+  | "UPDATED_OLD";

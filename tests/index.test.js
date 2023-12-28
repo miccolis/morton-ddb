@@ -29,17 +29,49 @@ t.test("handler - get domain route", async (t) => {
   t.equal(resp.statusCode, 404);
 });
 
-t.test("handler - create domain route", async (t) => {
-  const domainId = "handler-create-domain-route";
+t.test("handler - domain lifecycle routes", async (t) => {
+  const domainId = "handler-domain-lifecycle-routes";
   const resp = await handler(
     asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
   );
-  t.same(resp.name, "Test Domain");
-  t.equal(resp.domainId, domainId);
-  t.equal(resp.version, 1);
+  t.same(resp, {
+    name: "Test Domain",
+    domainId,
+    version: 1,
+    access: "private",
+    ttl: 0,
+  });
 
   const resp2 = await handler(asRequestContext("GET", `/d/${domainId}`));
-  t.same(resp2, { domainId, name: "Test Domain", version: 1 });
+  t.same(resp2, {
+    domainId,
+    name: "Test Domain",
+    version: 1,
+    access: "private",
+    ttl: 0,
+  });
+
+  const resp3 = await handler(
+    asRequestContext("PATCH", `/d/${domainId}`, {
+      name: "Updated Domain",
+      version: 1,
+    }),
+  );
+  t.same(resp3, {
+    domainId,
+    name: "Updated Domain",
+    version: 2,
+    access: "private",
+    ttl: 0,
+  });
+
+  const resp4 = await handler(
+    asRequestContext("PATCH", `/d/${domainId}`, {
+      name: "Updated Domain Again",
+      version: 1,
+    }),
+  );
+  t.equal(resp4.statusCode, 409);
 });
 
 t.test("handler - listing route", async (t) => {
@@ -85,8 +117,8 @@ t.test("handler - create route", async (t) => {
   t.ok(resp.itemId);
 });
 
-t.test("handler - item routes", async (t) => {
-  const domainId = "handler-item-routes";
+t.test("handler - item lifecycle routes", async (t) => {
+  const domainId = "handler-item-lifecycle-routes";
   await handler(
     asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
   );
@@ -114,7 +146,7 @@ t.test("handler - item routes", async (t) => {
     asRequestContext("GET", `/d/${domainId}/item/${itemId}`),
   );
   t.same(resp3, {
-    domainId: "handler-item-routes",
+    domainId,
     itemId,
     version: 1,
     type: "Feature",

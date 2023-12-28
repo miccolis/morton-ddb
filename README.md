@@ -3,7 +3,7 @@
 ```
 GET    /d/<domain-id> - Get a domain
 PUT    /d/<domain-id> - Create a domain
-PATCH  /d/<domain-id> - Not implemented
+PATCH  /d/<domain-id> - Update a domain
 
 GET    /d/<domain-id>/item - Returns all features
 POST   /d/<domain-id>/item - Create a new feature
@@ -51,7 +51,7 @@ aws lambda update-function-code --function-name $FUNCTION_ARN --zip-file fileb:/
 
 ### Prerequisites
 
-Test suite assumes you've got Docker available so that it can run "DynamoDB Local". It will also attempt to use port 8000 for the same.
+Test suite assumes you've got Docker available so that it can run "DynamoDB Local". It will also attempt to use port 8000 for the same. Currently tests also assume that DynamodDB local is also running. See notes below...
 
 #### Notes on avoiding Docker Desktop
 
