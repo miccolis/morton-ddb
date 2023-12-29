@@ -29,6 +29,7 @@
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.129",
+        "@types/geojson": "^7946.0.13",
         "@types/node": "^20.9.4",
         "@typescript-eslint/eslint-plugin": "^6.15.0",
         "@typescript-eslint/parser": "^6.15.0",

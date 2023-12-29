@@ -17,11 +17,12 @@ import { itemQueryHandler } from "./lib/itemQueryHandler.js";
 /**
  * @typedef {import('aws-lambda').APIGatewayProxyEventV2} Event
  *
+ * @typedef {import('./lib/types').HttpMethod} HttpMethod
  * @typedef {import('./lib/types').PathHandler} PathHandler
  * @typedef {import('./lib/types').Response} Response
  */
 
-/** @type {Array<[PathHandler, string, string]>} */
+/** @type {Array<[PathHandler, HttpMethod, string]>} */
 const pathHandlers = [
   [itemQueryHandler, "GET", "/d/:domain/query"],
   [itemCreateHandler, "POST", "/d/:domain/item"],
@@ -34,7 +35,7 @@ const pathHandlers = [
   [domainUpdateHandler, "PATCH", "/d/:domain"],
 ];
 
-/** @type {Array<[PathHandler, string, import('path-to-regexp').MatchFunction]>} */
+/** @type {Array<[PathHandler, HttpMethod, import('path-to-regexp').MatchFunction]>} */
 const compiledPaths = pathHandlers.map(([handler, method, path]) => {
   return [handler, method, match(path, { decode: decodeURIComponent })];
 });

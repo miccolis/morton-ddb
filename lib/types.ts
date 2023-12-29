@@ -1,4 +1,5 @@
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { Feature, FeatureCollection } from "geojson";
 
 export type Config = {
   dynamodbTableName: string;
@@ -8,6 +9,8 @@ export type Config = {
   mode: string;
   zooms: Array<number>;
 };
+
+export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";
 
 export type PathHandlerOptions = {
   params: Record<string, string>;
@@ -40,12 +43,18 @@ export type Domain = {
   version?: number;
 };
 
-export type Item = {
+export type Item = Feature & {
   itemId: string;
-  type: string;
-  properties?: Record<string, any>;
-  geometry: any;
+  domainId?: string;
   version?: number;
+};
+
+export type ItemCollection = FeatureCollection & {
+  query: {
+    domain?: string;
+    bbox?: Array<number>;
+  };
+  features: Array<Item>;
 };
 
 // Typescript definition of UpdateCommandInpute is picky, but this satisfies
