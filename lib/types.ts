@@ -44,7 +44,7 @@ export type Item = {
   itemId: string;
   type: string;
   properties?: Record<string, any>;
-  geomerty: any;
+  geometry: any;
   version?: number;
 };
 

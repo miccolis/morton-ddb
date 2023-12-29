@@ -165,6 +165,10 @@ t.test("handler - item lifecycle routes", async (t) => {
       properties: {
         name: "Skull island",
       },
+      geometry: {
+        type: "Point",
+        coordinates: [-45, 0],
+      },
     }),
   );
   t.same(resp4, {
@@ -177,7 +181,7 @@ t.test("handler - item lifecycle routes", async (t) => {
     },
     geometry: {
       type: "Point",
-      coordinates: [0, 0],
+      coordinates: [-45, 0],
     },
   });
 
