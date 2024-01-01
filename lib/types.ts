@@ -7,7 +7,6 @@ export type Config = {
     endpoint: string;
   };
   mode: string;
-  zooms: Array<number>;
 };
 
 export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";
@@ -39,6 +38,7 @@ export type Domain = {
   domainId?: string;
   name: string;
   access: "public" | "private";
+  zoom: number;
   ttl?: number;
   version?: number;
 };

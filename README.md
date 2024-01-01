@@ -22,7 +22,6 @@ GET    /d/<domain-id>/query?point=<x>,<y> - Not implemented
 | -------------------- | ------------------------------------------------------------------ | ----------------------- |
 | DYNAMODB_TABLE_NAME  | DynamoDB table name                                                | `my-table`              |
 | DYNAMODB_ENDPOINT    | Overrides the default DynamoDB endpoint, useful for local testing  | `http://localhost:8000` |
-| ZOOMS                | At what zoom level data will be indexed                            | `12`                    |
 | MODE                 | Set to `read_wite` to enable write access. Defaults to `read_only` | `read_write'            |
 
 ## Indexing

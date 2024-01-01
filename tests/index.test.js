@@ -32,7 +32,10 @@ t.test("handler - get domain route", async (t) => {
 t.test("handler - domain lifecycle routes", async (t) => {
   const domainId = "handler-domain-lifecycle-routes";
   const resp = await handler(
-    asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
+    asRequestContext("PUT", `/d/${domainId}`, {
+      name: "Test Domain",
+      zoom: 12,
+    }),
   );
   t.same(resp, {
     name: "Test Domain",
@@ -40,6 +43,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
     version: 1,
     access: "private",
     ttl: 0,
+    zoom: 12,
   });
 
   const resp2 = await handler(asRequestContext("GET", `/d/${domainId}`));
@@ -77,7 +81,10 @@ t.test("handler - domain lifecycle routes", async (t) => {
 t.test("handler - listing route", async (t) => {
   const domainId = "handler-listing-route";
   await handler(
-    asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
+    asRequestContext("PUT", `/d/${domainId}`, {
+      name: "Test Domain",
+      zoom: 12,
+    }),
   );
 
   const resp = await handler(asRequestContext("GET", `/d/${domainId}/item`));
@@ -91,36 +98,13 @@ t.test("handler - listing route", async (t) => {
   );
 });
 
-t.test("handler - create route", async (t) => {
-  const domainId = "handler-create-route";
-  await handler(
-    asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
-  );
-
-  const item = {
-    type: "Feature",
-    properties: {
-      name: "Null island",
-    },
-    geometry: {
-      type: "Point",
-      coordinates: [0, 0],
-    },
-  };
-
-  const resp = await handler(
-    asRequestContext("POST", `/d/${domainId}/item`, item),
-  );
-  t.same(resp.properties, item.properties);
-  t.same(resp.geometry, item.geometry);
-  t.equal(resp.version, 1);
-  t.ok(resp.itemId);
-});
-
 t.test("handler - item lifecycle routes", async (t) => {
   const domainId = "handler-item-lifecycle-routes";
   await handler(
-    asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
+    asRequestContext("PUT", `/d/${domainId}`, {
+      name: "Test Domain",
+      zoom: 12,
+    }),
   );
 
   const resp = await handler(
@@ -138,9 +122,23 @@ t.test("handler - item lifecycle routes", async (t) => {
       coordinates: [0, 0],
     },
   };
-  const { itemId } = await handler(
+  const resp2 = await handler(
     asRequestContext("POST", `/d/${domainId}/item`, item),
   );
+  const { itemId } = resp2;
+  t.same(resp2, {
+    domainId,
+    itemId,
+    version: 1,
+    type: "Feature",
+    properties: {
+      name: "Null island",
+    },
+    geometry: {
+      type: "Point",
+      coordinates: [0, 0],
+    },
+  });
 
   const resp3 = await handler(
     asRequestContext("GET", `/d/${domainId}/item/${itemId}`),
@@ -194,7 +192,10 @@ t.test("handler - item lifecycle routes", async (t) => {
 t.test("handler - query route", async (t) => {
   const domainId = "handler-query-route";
   await handler(
-    asRequestContext("PUT", `/d/${domainId}`, { name: "Test Domain" }),
+    asRequestContext("PUT", `/d/${domainId}`, {
+      name: "Test Domain",
+      zoom: 12,
+    }),
   );
 
   const resp = await handler({

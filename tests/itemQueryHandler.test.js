@@ -9,7 +9,7 @@ import { loadConfig } from "../lib/config.js";
 import { itemQueryHandler } from "../lib/itemQueryHandler.js";
 
 t.test("itemQueryHandler - fetch point", async (t) => {
-  const { dynamodbClientConfig, dynamodbTableName, zooms } = loadConfig(true);
+  const { dynamodbClientConfig, dynamodbTableName } = loadConfig(true);
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );
@@ -42,11 +42,11 @@ t.test("itemQueryHandler - fetch point", async (t) => {
     params: { domain },
     event: {
       requestContext: {
-        body: JSON.stringify({ name: domain, access: "public" }),
+        body: JSON.stringify({ name: domain, access: "public", zoom: 12 }),
       },
     },
     ddbClient,
-    config: { dynamodbTableName, zooms },
+    config: { dynamodbTableName },
   });
 
   for (const f of features) {
@@ -54,7 +54,7 @@ t.test("itemQueryHandler - fetch point", async (t) => {
       params: { domain },
       event: { requestContext: { body: JSON.stringify(f) } },
       ddbClient,
-      config: { dynamodbTableName, zooms },
+      config: { dynamodbTableName },
     });
   }
 
@@ -69,7 +69,7 @@ t.test("itemQueryHandler - fetch point", async (t) => {
       params: { domain },
       event: { queryStringParameters: { bbox } },
       ddbClient,
-      config: { dynamodbTableName, zooms },
+      config: { dynamodbTableName },
     });
     const actual = features.map((v) => v.properties.name);
     actual.sort();
