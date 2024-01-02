@@ -211,7 +211,7 @@ t.test("handler - query route", async (t) => {
   });
   t.same(resp.query, {
     domain: domainId,
-    bbox: [0, 0, 10, 10],
+    bbox: "0,0,10,10",
   });
   t.ok(Array.isArray(resp.features));
 });

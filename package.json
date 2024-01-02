@@ -22,6 +22,7 @@
         "@aws-sdk/lib-dynamodb": "^3.454.0",
         "@mapbox/tile-cover": "^3.0.2",
         "@turf/boolean-disjoint": "^6.5.0",
+        "@turf/buffer": "^6.5.0",
         "morton": "^1.0.2",
         "path-to-regexp": "^6.2.1",
         "tilebelt": "^1.0.1",

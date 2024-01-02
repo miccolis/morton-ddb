@@ -13,7 +13,7 @@ PATCH  /d/<domain-id>/item/<item-uuid> - Update a single feature
 DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
 
 GET    /d/<domain-id>/query?bbox=<minx>,<miny>,<maxx>,<maxy> - Query for features in a bounding box
-GET    /d/<domain-id>/query?point=<x>,<y> - Not implemented
+GET    /d/<domain-id>/query?point=<x>,<y> - Query for features near a point
 ```
 
 ## Configuration
