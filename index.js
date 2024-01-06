@@ -52,7 +52,7 @@ export const handler = async function (event /*, context */) {
   );
 
   if (config.mode !== "read_write" && requestContext.http.method !== "GET") {
-    return new HttpError(403).value();
+    return new HttpError(403).toJSON();
   }
 
   const ddbClient = DynamoDBDocumentClient.from(
@@ -74,13 +74,13 @@ export const handler = async function (event /*, context */) {
         });
       } catch (err) {
         if (err instanceof HttpError) {
-          return err.value();
+          return err.toJSON();
         } else {
           console.error(err);
-          return new HttpError(500).value();
+          return new HttpError(500).toJSON();
         }
       }
     }
   }
-  return new HttpError(404).value();
+  return new HttpError(404).toJSON();
 };
