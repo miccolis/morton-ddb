@@ -47,7 +47,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
   });
 
   const resp2 = await handler(asRequestContext("GET", `/d/${domainId}`));
-  t.same(resp2, {
+  t.same(JSON.parse(resp2.body), {
     domainId,
     name: "Test Domain",
     version: 1,
@@ -87,9 +87,9 @@ t.test("handler - listing route", async (t) => {
     }),
   );
 
-  const resp = await handler(asRequestContext("GET", `/d/${domainId}/item`));
+  const resp = await handler(asRequestContext("GET", `/d/${domainId}/items`));
   t.equal(
-    JSON.stringify(resp),
+    resp.body,
     JSON.stringify({
       query: { domain: domainId },
       type: "FeatureCollection",
@@ -143,7 +143,7 @@ t.test("handler - item lifecycle routes", async (t) => {
   const resp3 = await handler(
     asRequestContext("GET", `/d/${domainId}/item/${itemId}`),
   );
-  t.same(resp3, {
+  t.same(JSON.parse(resp3.body), {
     domainId,
     itemId,
     version: 1,
@@ -209,9 +209,10 @@ t.test("handler - query route", async (t) => {
       bbox: "0,0,10,10",
     },
   });
-  t.same(resp.query, {
+  const body = JSON.parse(resp.body)
+  t.same(body.query, {
     domain: domainId,
     bbox: "0,0,10,10",
   });
-  t.ok(Array.isArray(resp.features));
+  t.ok(Array.isArray(body.features));
 });

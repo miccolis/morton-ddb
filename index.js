@@ -29,14 +29,33 @@ const pathHandlers = [
   [itemGetHandler, "GET", "/d/:domain/item/:item"],
   [itemUpdateHandler, "PATCH", "/d/:domain/item/:item"],
   [itemDeleteHandler, "DELETE", "/d/:domain/item/:item"],
-  [itemListHandler, "GET", "/d/:domain/item"],
+  [itemListHandler, "GET", "/d/:domain/items"],
   [domainGetHandler, "GET", "/d/:domain"],
   [domainCreateHandler, "PUT", "/d/:domain"],
   [domainUpdateHandler, "PATCH", "/d/:domain"],
 ];
 
+export const addCORS = function(resp) {
+    if (resp.statusCode === undefined) {
+      resp = {
+        statusCode: 200,
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(resp),
+      };
+    }
+    resp.headers["Access-Control-Allow-Origin"] = "*";
+    return resp;
+}
+
 /** @type {Array<[PathHandler, HttpMethod, import('path-to-regexp').MatchFunction]>} */
 const compiledPaths = pathHandlers.map(([handler, method, path]) => {
+  if (method === 'GET') {
+    const originalHandler = handler;
+    handler = async (options) => addCORS(await originalHandler(options));
+  }
+  // TODO setup OPTIONS for other endpoints
   return [handler, method, match(path, { decode: decodeURIComponent })];
 });
 
