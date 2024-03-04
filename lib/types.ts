@@ -1,5 +1,6 @@
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { Feature, FeatureCollection } from "geojson";
+import { APIGatewayProxyEventV2 } from "aws-lambda";
 
 export type Config = {
   dynamodbTableName: string;
@@ -13,10 +14,7 @@ export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";
 
 export type PathHandlerOptions = {
   params: Record<string, string>;
-  event: {
-    requestContext: { body: string };
-    queryStringParameters: Record<string, string>;
-  };
+  event: APIGatewayProxyEventV2;
   ddbClient: DynamoDBDocumentClient;
   config: Config;
 };

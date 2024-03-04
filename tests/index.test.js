@@ -14,8 +14,9 @@ function asRequestContext(method, path, body) {
         method,
         path,
       },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
     },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+    headers: { 'content-type': 'application/json' }
   };
 }
 

@@ -41,9 +41,8 @@ t.test("itemQueryHandler - fetch bbox", async (t) => {
   await domainCreateHandler({
     params: { domain },
     event: {
-      requestContext: {
-        body: JSON.stringify({ name: domain, access: "public", zoom: 12 }),
-      },
+      body: JSON.stringify({ name: domain, access: "public", zoom: 12 }),
+      headers: { 'content-type': 'application/json' }
     },
     ddbClient,
     config: { dynamodbTableName },
@@ -52,7 +51,10 @@ t.test("itemQueryHandler - fetch bbox", async (t) => {
   for (const f of features) {
     await itemCreateHandler({
       params: { domain },
-      event: { requestContext: { body: JSON.stringify(f) } },
+      event: {
+        body: JSON.stringify(f),
+        headers: { 'content-type': 'application/json' }
+      },
       ddbClient,
       config: { dynamodbTableName },
     });
@@ -102,9 +104,8 @@ t.test("itemQueryHandler - fetch point", async (t) => {
   await domainCreateHandler({
     params: { domain },
     event: {
-      requestContext: {
-        body: JSON.stringify({ name: domain, access: "public", zoom: 12 }),
-      },
+      body: JSON.stringify({ name: domain, access: "public", zoom: 12 }),
+      headers: { 'content-type': 'application/json' }
     },
     ddbClient,
     config: { dynamodbTableName },
@@ -113,7 +114,10 @@ t.test("itemQueryHandler - fetch point", async (t) => {
   for (const f of features) {
     await itemCreateHandler({
       params: { domain },
-      event: { requestContext: { body: JSON.stringify(f) } },
+      event: {
+        body: JSON.stringify(f),
+        headers: { 'content-type': 'application/json' }
+      },
       ddbClient,
       config: { dynamodbTableName },
     });

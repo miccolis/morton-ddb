@@ -50,7 +50,7 @@ const server = http.createServer((req, res) => {
       body += chunk;
     });
     req.on("end", () => {
-      requestContext.body = body;
+      event.body = body;
       handlerWrapper({ handler, event, res });
     });
   } else {
