@@ -1,6 +1,15 @@
 import t from "tap";
 
+import { loadConfig } from "../lib/config.js";
+import { generateJWT } from "../lib/helpers.js";
+
 import { handler } from "../index.js";
+
+const validCookie = await (async () => {
+  const { jwtSecret } = loadConfig(true);
+  const jwt = await generateJWT("test-username", jwtSecret);
+  return `auth=${jwt}`;
+})();
 
 /**
  * @param {String} method
@@ -16,7 +25,8 @@ function asRequestContext(method, path, body) {
       },
     },
     body: body !== undefined ? JSON.stringify(body) : undefined,
-    headers: { 'content-type': 'application/json' }
+    headers: { "content-type": "application/json" },
+    cookies: [validCookie], // TODO make optional
   };
 }
 
@@ -210,7 +220,7 @@ t.test("handler - query route", async (t) => {
       bbox: "0,0,10,10",
     },
   });
-  const body = JSON.parse(resp.body)
+  const body = JSON.parse(resp.body);
   t.same(body.query, {
     domain: domainId,
     bbox: "0,0,10,10",

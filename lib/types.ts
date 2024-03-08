@@ -7,6 +7,7 @@ export type Config = {
   dynamodbClientConfig: {
     endpoint: string;
   };
+  jwtSecret: Uint8Array;
   mode: string;
 };
 
@@ -31,6 +32,15 @@ export type Response =
   | Omit<object, "statusCode">;
 
 export type PathHandler = (PathHandlerOptions) => Response;
+
+export type Account = {
+  username: string;
+  email: string;
+  created: string;
+  login: string;
+  password?: string;
+  passwordHash?: string;
+};
 
 export type Domain = {
   domainId?: string;

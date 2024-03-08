@@ -5,14 +5,18 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { itemCreateHandler } from "../lib/itemCreateHandler.js";
 import { domainCreateHandler } from "../lib/domainCreateHandler.js";
 import { loadConfig } from "../lib/config.js";
+import { generateJWT } from "../lib/helpers.js";
 
 import { itemQueryHandler } from "../lib/itemQueryHandler.js";
 
 t.test("itemQueryHandler - fetch bbox", async (t) => {
-  const { dynamodbClientConfig, dynamodbTableName } = loadConfig(true);
+  const config = loadConfig(true);
+  const { dynamodbClientConfig, jwtSecret } = config;
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );
+  const authCookie = `auth=${await generateJWT("test-username", jwtSecret)}`;
+
   const domain = "test-itemQueryHandler-fetchBbox";
 
   const features = [
@@ -42,10 +46,11 @@ t.test("itemQueryHandler - fetch bbox", async (t) => {
     params: { domain },
     event: {
       body: JSON.stringify({ name: domain, access: "public", zoom: 12 }),
-      headers: { 'content-type': 'application/json' }
+      headers: { "content-type": "application/json" },
+      cookies: [authCookie],
     },
     ddbClient,
-    config: { dynamodbTableName },
+    config,
   });
 
   for (const f of features) {
@@ -53,10 +58,11 @@ t.test("itemQueryHandler - fetch bbox", async (t) => {
       params: { domain },
       event: {
         body: JSON.stringify(f),
-        headers: { 'content-type': 'application/json' }
+        headers: { "content-type": "application/json" },
+        cookies: [authCookie],
       },
       ddbClient,
-      config: { dynamodbTableName },
+      config,
     });
   }
 
@@ -71,7 +77,7 @@ t.test("itemQueryHandler - fetch bbox", async (t) => {
       params: { domain },
       event: { queryStringParameters: { bbox } },
       ddbClient,
-      config: { dynamodbTableName },
+      config,
     });
     const actual = features.map((v) => v.properties.name);
     actual.sort();
@@ -82,10 +88,13 @@ t.test("itemQueryHandler - fetch bbox", async (t) => {
 });
 
 t.test("itemQueryHandler - fetch point", async (t) => {
-  const { dynamodbClientConfig, dynamodbTableName } = loadConfig(true);
+  const config = loadConfig(true);
+  const { dynamodbClientConfig, jwtSecret } = config;
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );
+  const authCookie = `auth=${await generateJWT("test-username", jwtSecret)}`;
+
   const domain = "test-itemQueryHandler-fetchPoint";
 
   const features = [
@@ -105,10 +114,11 @@ t.test("itemQueryHandler - fetch point", async (t) => {
     params: { domain },
     event: {
       body: JSON.stringify({ name: domain, access: "public", zoom: 12 }),
-      headers: { 'content-type': 'application/json' }
+      headers: { "content-type": "application/json" },
+      cookies: [authCookie],
     },
     ddbClient,
-    config: { dynamodbTableName },
+    config,
   });
 
   for (const f of features) {
@@ -116,10 +126,11 @@ t.test("itemQueryHandler - fetch point", async (t) => {
       params: { domain },
       event: {
         body: JSON.stringify(f),
-        headers: { 'content-type': 'application/json' }
+        headers: { "content-type": "application/json" },
+        cookies: [authCookie],
       },
       ddbClient,
-      config: { dynamodbTableName },
+      config,
     });
   }
 
@@ -133,7 +144,7 @@ t.test("itemQueryHandler - fetch point", async (t) => {
       params: { domain },
       event: { queryStringParameters: { point } },
       ddbClient,
-      config: { dynamodbTableName },
+      config,
     });
     const actual = features.map((v) => v.properties.name);
     actual.sort();

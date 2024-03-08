@@ -20,6 +20,9 @@ function handlerWrapper({ handler, event, res }) {
       for (const [k, v] of Object.entries(resp.headers)) {
         res.setHeader(k, v);
       }
+      if (resp.cookies?.length > 0) {
+        res.setHeader("Set-Cookie", resp.cookies);
+      }
       res.end(resp.body, "utf8");
     })
     .catch((err) => {
@@ -35,14 +38,20 @@ const server = http.createServer((req, res) => {
     queryStringParameters[key] = value;
   }
 
+  const { cookie, ...headers } = req.headers;
+
   const requestContext = {
-    headers: req.headers,
     http: {
       method: req.method,
       path: requestedURL.pathname,
     },
   };
-  const event = { requestContext, queryStringParameters };
+  const event = {
+    requestContext,
+    headers,
+    cookies: (cookie ?? "").split(";"),
+    queryStringParameters,
+  };
 
   if (["POST", "PUT", "PATCH"].includes(req.method)) {
     let body = "";

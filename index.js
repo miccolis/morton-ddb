@@ -4,6 +4,8 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 import { HttpError } from "./lib/helpers.js";
 import { loadConfig } from "./lib/config.js";
+
+import { authorizeHandler } from "./lib/authorizeHandler.js";
 import { domainCreateHandler } from "./lib/domainCreateHandler.js";
 import { domainGetHandler } from "./lib/domainGetHandler.js";
 import { domainUpdateHandler } from "./lib/domainUpdateHandler.js";
@@ -33,25 +35,26 @@ const pathHandlers = [
   [domainGetHandler, "GET", "/d/:domain"],
   [domainCreateHandler, "PUT", "/d/:domain"],
   [domainUpdateHandler, "PATCH", "/d/:domain"],
+  [authorizeHandler, "POST", "/authorize"],
 ];
 
-export const addCORS = function(resp) {
-    if (resp.statusCode === undefined) {
-      resp = {
-        statusCode: 200,
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(resp),
-      };
-    }
-    resp.headers["Access-Control-Allow-Origin"] = "*";
-    return resp;
-}
+export const addCORS = function (resp) {
+  if (resp.statusCode === undefined) {
+    resp = {
+      statusCode: 200,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(resp),
+    };
+  }
+  resp.headers["Access-Control-Allow-Origin"] = "*";
+  return resp;
+};
 
 /** @type {Array<[PathHandler, HttpMethod, import('path-to-regexp').MatchFunction]>} */
 const compiledPaths = pathHandlers.map(([handler, method, path]) => {
-  if (method === 'GET') {
+  if (method === "GET") {
     const originalHandler = handler;
     handler = async (options) => addCORS(await originalHandler(options));
   }

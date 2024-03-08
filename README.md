@@ -14,6 +14,13 @@ DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
 
 GET    /d/<domain-id>/query?bbox=<minx>,<miny>,<maxx>,<maxy> - Query for features in a bounding box
 GET    /d/<domain-id>/query?point=<x>,<y> - Query for features near a point
+
+GET    /accounts
+GET    /account
+POST   /account
+PATCH  /account/<account-id>
+
+POST   /authorize
 ```
 
 ## Configuration
