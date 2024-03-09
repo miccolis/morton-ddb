@@ -13,6 +13,7 @@
         "check": "tsc",
         "pretest": "IS_TEST_RUN=1 node tests/before.js",
         "test": "IS_TEST_RUN=1 tap tests/*.test.js",
+        "all": "prettier -c . && npm run lint && npm run check && npm run test;",
         "bundle": "esbuild index.js --bundle --platform=node  > dist/index.js"
     },
     "author": "",

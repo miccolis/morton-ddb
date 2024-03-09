@@ -15,8 +15,9 @@ const validCookie = await (async () => {
  * @param {String} method
  * @param {String} path
  * @param {object} body
+ * @param {string?} sessionCookie
  */
-function asRequestContext(method, path, body) {
+function asRequestContext(method, path, body, sessionCookie) {
   return {
     requestContext: {
       http: {
@@ -26,7 +27,7 @@ function asRequestContext(method, path, body) {
     },
     body: body !== undefined ? JSON.stringify(body) : undefined,
     headers: { "content-type": "application/json" },
-    cookies: [validCookie], // TODO make optional
+    cookies: [sessionCookie || validCookie],
   };
 }
 
@@ -51,6 +52,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
   t.same(resp, {
     name: "Test Domain",
     domainId,
+    owners: ["test-username"],
     version: 1,
     access: "private",
     ttl: 0,
@@ -226,4 +228,58 @@ t.test("handler - query route", async (t) => {
     bbox: "0,0,10,10",
   });
   t.ok(Array.isArray(body.features));
+});
+
+t.test("handles - account lifecycle routes", async (t) => {
+  const resp1 = await handler(
+    asRequestContext("POST", `/account`, {
+      username: "test-created",
+      email: "test-created@example.com",
+      password: "abadpassword",
+    }),
+  );
+  t.same(resp1.version, 1);
+
+  const resp2 = await handler({
+    requestContext: {
+      http: {
+        method: "POST",
+        path: "/authorize",
+      },
+    },
+    body: "username=test-created&password=abadpassword",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+  });
+  t.same(resp2.statusCode, 200);
+
+  const cookie = resp2.cookies
+    .find((v) => v.startsWith("auth="))
+    .split(";", 1)[0];
+
+  // change password as test-created user
+  const resp3 = await handler(
+    asRequestContext(
+      "PATCH",
+      `/account/${resp1.username}`,
+      {
+        password: "asillypassword",
+        version: resp1.version,
+      },
+      cookie,
+    ),
+  );
+  t.same(resp3.version, 2);
+
+  // authorize as a test-created user using the new password
+  const resp4 = await handler({
+    requestContext: {
+      http: {
+        method: "POST",
+        path: "/authorize",
+      },
+    },
+    body: "username=test-created&password=asillypassword",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+  });
+  t.same(resp4.statusCode, 200);
 });

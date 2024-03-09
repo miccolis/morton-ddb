@@ -61,7 +61,7 @@ t.test("authorizeHandler - verify password", async (t) => {
         email: "test@example.com",
       }),
       headers: { "content-type": "application/json" },
-      cookies: [ authCookie ],
+      cookies: [authCookie],
     },
     ddbClient,
     config,

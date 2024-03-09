@@ -5,6 +5,8 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { HttpError } from "./lib/helpers.js";
 import { loadConfig } from "./lib/config.js";
 
+import { accountCreateHandler } from "./lib/accountCreateHandler.js";
+import { accountUpdateHandler } from "./lib/accountUpdateHandler.js";
 import { authorizeHandler } from "./lib/authorizeHandler.js";
 import { domainCreateHandler } from "./lib/domainCreateHandler.js";
 import { domainGetHandler } from "./lib/domainGetHandler.js";
@@ -35,6 +37,8 @@ const pathHandlers = [
   [domainGetHandler, "GET", "/d/:domain"],
   [domainCreateHandler, "PUT", "/d/:domain"],
   [domainUpdateHandler, "PATCH", "/d/:domain"],
+  [accountCreateHandler, "POST", "/account"],
+  [accountUpdateHandler, "PATCH", "/account/:account"],
   [authorizeHandler, "POST", "/authorize"],
 ];
 
@@ -72,10 +76,6 @@ export const handler = async function (event /*, context */) {
   const { dynamodbClientConfig, ...config } = loadConfig(
     !!process.env.IS_TEST_RUN,
   );
-
-  if (config.mode !== "read_write" && requestContext.http.method !== "GET") {
-    return new HttpError(403).toJSON();
-  }
 
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),

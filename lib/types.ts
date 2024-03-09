@@ -8,7 +8,6 @@ export type Config = {
     endpoint: string;
   };
   jwtSecret: Uint8Array;
-  mode: string;
 };
 
 export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";
@@ -26,21 +25,34 @@ export type Response =
       statusCode: number;
       headers: Record<string, string>;
       body: string;
-      cookies?: Record<string, string>;
+      cookies?: Array<string>;
       isBase64Encoded?: boolean;
     }
   | Omit<object, "statusCode">;
 
 export type PathHandler = (PathHandlerOptions) => Response;
 
+type DynamoDBItem = {
+  partition: string;
+  sort: string;
+  model: string;
+  version: number;
+};
+
 export type Account = {
   username: string;
   email: string;
   created: string;
-  login: string;
+  login?: string;
+  version?: number;
   password?: string;
-  passwordHash?: string;
+  passwordResetRequired?: boolean;
 };
+
+export type StoredAccount = DynamoDBItem &
+  Account & {
+    passwordHash?: string;
+  };
 
 export type Domain = {
   domainId?: string;
@@ -49,7 +61,10 @@ export type Domain = {
   zoom: number;
   ttl?: number;
   version?: number;
+  owners: string[];
 };
+
+export type StoredDomain = DynamoDBItem & Domain;
 
 export type Item = Feature & {
   itemId: string;
