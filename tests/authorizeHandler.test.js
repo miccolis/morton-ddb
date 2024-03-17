@@ -88,11 +88,10 @@ t.test("authorizeHandler - verify password", async (t) => {
     ddbClient,
     config,
   });
-  t.equal(resp.statusCode, 200);
-  t.same(resp.headers, { "content-type": "application/json" });
-  t.same(JSON.parse(resp.body), {
-    username: "test",
-    email: "test@example.com",
+  t.equal(resp.statusCode, 303);
+  t.same(resp.headers, {
+    "content-type": "application/json",
+    location: "http://localhost:8080",
   });
   t.ok(resp.cookies[0].startsWith("auth=")); // TODO check jwt payload
 });

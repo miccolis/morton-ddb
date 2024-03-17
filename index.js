@@ -10,6 +10,7 @@ import { accountUpdateHandler } from "./lib/accountUpdateHandler.js";
 import { authorizeHandler } from "./lib/authorizeHandler.js";
 import { domainCreateHandler } from "./lib/domainCreateHandler.js";
 import { domainGetHandler } from "./lib/domainGetHandler.js";
+import { domainListHandler } from "./lib/domainListHandler.js";
 import { domainUpdateHandler } from "./lib/domainUpdateHandler.js";
 import { itemCreateHandler } from "./lib/itemCreateHandler.js";
 import { itemDeleteHandler } from "./lib/itemDeleteHandler.js";
@@ -34,6 +35,7 @@ const pathHandlers = [
   [itemUpdateHandler, "PATCH", "/d/:domain/item/:item"],
   [itemDeleteHandler, "DELETE", "/d/:domain/item/:item"],
   [itemListHandler, "GET", "/d/:domain/items"],
+  [domainListHandler, "GET", "/domains"],
   [domainGetHandler, "GET", "/d/:domain"],
   [domainCreateHandler, "PUT", "/d/:domain"],
   [domainUpdateHandler, "PATCH", "/d/:domain"],
@@ -42,6 +44,9 @@ const pathHandlers = [
   [authorizeHandler, "POST", "/authorize"],
 ];
 
+/**
+ * @returns {Response}
+ */
 export const addCORS = function (resp) {
   if (resp.statusCode === undefined) {
     resp = {
@@ -56,11 +61,24 @@ export const addCORS = function (resp) {
   return resp;
 };
 
+/**
+ * @returns {Response}
+ */
+function prepareErrorResp(err) {
+  if (err instanceof HttpError) {
+    return err.toJSON();
+  } else {
+    console.error(err);
+    return new HttpError(500).toJSON();
+  }
+}
+
 /** @type {Array<[PathHandler, HttpMethod, import('path-to-regexp').MatchFunction]>} */
 const compiledPaths = pathHandlers.map(([handler, method, path]) => {
   if (method === "GET") {
     const originalHandler = handler;
-    handler = async (options) => addCORS(await originalHandler(options));
+    handler = async (options) => originalHandler(options)
+      .then(resp =>  addCORS(resp), err => addCORS(prepareErrorResp(err)));
   }
   // TODO setup OPTIONS for other endpoints
   return [handler, method, match(path, { decode: decodeURIComponent })];
@@ -95,12 +113,7 @@ export const handler = async function (event /*, context */) {
           config,
         });
       } catch (err) {
-        if (err instanceof HttpError) {
-          return err.toJSON();
-        } else {
-          console.error(err);
-          return new HttpError(500).toJSON();
-        }
+        return prepareErrorResp(err);
       }
     }
   }

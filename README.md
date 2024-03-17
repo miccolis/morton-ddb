@@ -1,11 +1,12 @@
 ## Morton DDB
 
 ```
+GET    /domains - List domains
 GET    /d/<domain-id> - Get a domain
 PUT    /d/<domain-id> - Create a domain
 PATCH  /d/<domain-id> - Update a domain
 
-GET    /d/<domain-id>/item - Returns all features
+GET    /d/<domain-id>/items - Returns all features
 POST   /d/<domain-id>/item - Create a new feature
 
 GET    /d/<domain-id>/item/<item-uuid> - Get a single feature
@@ -24,11 +25,12 @@ POST   /authorize
 
 ## Configuration
 
-| Environment variable | Description                                                        | Example                 |
-| -------------------- | ------------------------------------------------------------------ | ----------------------- |
-| DYNAMODB_TABLE_NAME  | DynamoDB table name                                                | `my-table`              |
-| DYNAMODB_ENDPOINT    | Overrides the default DynamoDB endpoint, useful for local testing  | `http://localhost:8000` |
-| MODE                 | Set to `read_wite` to enable write access. Defaults to `read_only` | `read_write'            |
+| Environment variable | Description                                                       | Example                 |
+| -------------------- | ----------------------------------------------------------------- | ----------------------- |
+| DYNAMODB_TABLE_NAME  | DynamoDB table name                                               | `my-table`              |
+| DYNAMODB_ENDPOINT    | Overrides the default DynamoDB endpoint, useful for local testing | `http://localhost:8000` |
+| JWT_SECRET           | Hex encoded HS257 secret.                                         |                         |
+| APP_URI              | Base URI for the web application                                  | `http://localhost:8080` |
 
 ## Indexing
 
@@ -39,6 +41,21 @@ Related reading https://aws.amazon.com/blogs/database/z-order-indexing-for-multi
 ## Development
 
 https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
+
+Quickest way to get running locally, run tests and then start the local server
+in test mode;
+
+```
+npm test
+IS_TEST_RUN=true node ./scripts/local.js
+```
+
+The front end is can be started using jekyll
+
+```
+cd web
+bundler exec jekyll serve
+```
 
 ## Deployment
 

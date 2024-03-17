@@ -91,7 +91,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
   t.equal(resp4.statusCode, 409);
 });
 
-t.test("handler - listing route", async (t) => {
+t.test("handler - listing routes", async (t) => {
   const domainId = "handler-listing-route";
   await handler(
     asRequestContext("PUT", `/d/${domainId}`, {
@@ -100,9 +100,12 @@ t.test("handler - listing route", async (t) => {
     }),
   );
 
-  const resp = await handler(asRequestContext("GET", `/d/${domainId}/items`));
+  const resp1 = await handler(asRequestContext("GET", `/domains`));
+  t.equal(typeof JSON.parse(resp1.body).domains, "object");
+
+  const resp2 = await handler(asRequestContext("GET", `/d/${domainId}/items`));
   t.equal(
-    resp.body,
+    resp2.body,
     JSON.stringify({
       query: { domain: domainId },
       type: "FeatureCollection",
@@ -250,7 +253,7 @@ t.test("handles - account lifecycle routes", async (t) => {
     body: "username=test-created&password=abadpassword",
     headers: { "content-type": "application/x-www-form-urlencoded" },
   });
-  t.same(resp2.statusCode, 200);
+  t.same(resp2.statusCode, 303);
 
   const cookie = resp2.cookies
     .find((v) => v.startsWith("auth="))
@@ -281,5 +284,5 @@ t.test("handles - account lifecycle routes", async (t) => {
     body: "username=test-created&password=asillypassword",
     headers: { "content-type": "application/x-www-form-urlencoded" },
   });
-  t.same(resp4.statusCode, 200);
+  t.same(resp4.statusCode, 303);
 });

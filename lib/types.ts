@@ -4,16 +4,17 @@ import { APIGatewayProxyEventV2 } from "aws-lambda";
 
 export type Config = {
   dynamodbTableName: string;
-  dynamodbClientConfig: {
+  dynamodbClientConfig?: {
     endpoint: string;
   };
   jwtSecret: Uint8Array;
+  appURI: string;
 };
 
 export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";
 
 export type PathHandlerOptions = {
-  params: Record<string, string>;
+  params: Record<string, string> | object;
   event: APIGatewayProxyEventV2;
   ddbClient: DynamoDBDocumentClient;
   config: Config;
@@ -30,7 +31,7 @@ export type Response =
     }
   | Omit<object, "statusCode">;
 
-export type PathHandler = (PathHandlerOptions) => Response;
+export type PathHandler = (options: PathHandlerOptions) => Promise<Response>;
 
 type DynamoDBItem = {
   partition: string;
@@ -57,6 +58,7 @@ export type StoredAccount = DynamoDBItem &
 export type Domain = {
   domainId?: string;
   name: string;
+  created: string;
   access: "public" | "private";
   zoom: number;
   ttl?: number;
