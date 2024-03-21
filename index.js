@@ -6,6 +6,7 @@ import { HttpError } from "./lib/helpers.js";
 import { loadConfig } from "./lib/config.js";
 
 import { accountCreateHandler } from "./lib/accountCreateHandler.js";
+import { accountGetHandler } from "./lib/accountGetHandler.js";
 import { accountUpdateHandler } from "./lib/accountUpdateHandler.js";
 import { authorizeHandler } from "./lib/authorizeHandler.js";
 import { domainCreateHandler } from "./lib/domainCreateHandler.js";
@@ -40,6 +41,7 @@ const pathHandlers = [
   [domainCreateHandler, "PUT", "/d/:domain"],
   [domainUpdateHandler, "PATCH", "/d/:domain"],
   [accountCreateHandler, "POST", "/account"],
+  [accountGetHandler, "GET", "/account"],
   [accountUpdateHandler, "PATCH", "/account/:account"],
   [authorizeHandler, "POST", "/authorize"],
 ];
@@ -77,8 +79,11 @@ function prepareErrorResp(err) {
 const compiledPaths = pathHandlers.map(([handler, method, path]) => {
   if (method === "GET") {
     const originalHandler = handler;
-    handler = async (options) => originalHandler(options)
-      .then(resp =>  addCORS(resp), err => addCORS(prepareErrorResp(err)));
+    handler = async (options) =>
+      originalHandler(options).then(
+        (resp) => addCORS(resp),
+        (err) => addCORS(prepareErrorResp(err)),
+      );
   }
   // TODO setup OPTIONS for other endpoints
   return [handler, method, match(path, { decode: decodeURIComponent })];
@@ -105,9 +110,12 @@ export const handler = async function (event /*, context */) {
     const matched = matcher(requestContext.http.path);
 
     if (matched) {
+      /** @type {Record<string, string>} */
+      const params = /** @type {undefined} */ (matched.params);
+
       try {
         return await pathHandler({
-          params: matched.params,
+          params,
           event,
           ddbClient,
           config,

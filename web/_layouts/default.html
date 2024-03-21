@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }}</title>
+    <!-- <link rel="stylesheet" href="/assets/css/bulma.min.css"> -->
+    {% for script in page.localScripts %}
+        <script src="/assets/scripts/{{ script }}"></script>
+    {% endfor %}
+    {% for script in page.remoteScripts %}
+        <script src="{{ script }}"></script>
+    {% endfor %}
+</head>
+<body>
+    <h1 class="title">{{ page.title }}</h1>
+    <p class="subtitle">
+        <strong>{{ page.subtitle }}</strong>
+    </p>
+    <section class="section pt-0">
+      <div class="content">
+      {{ content }}
+      </div>
+    </section>
+</body>

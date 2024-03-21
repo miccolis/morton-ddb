@@ -14,7 +14,7 @@ export type Config = {
 export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";
 
 export type PathHandlerOptions = {
-  params: Record<string, string> | object;
+  params: Record<string, string>;
   event: APIGatewayProxyEventV2;
   ddbClient: DynamoDBDocumentClient;
   config: Config;
@@ -70,6 +70,7 @@ export type StoredDomain = DynamoDBItem & Domain;
 
 export type Item = Feature & {
   itemId: string;
+  // created: string;
   domainId?: string;
   version?: number;
 };

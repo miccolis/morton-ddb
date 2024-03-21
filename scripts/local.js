@@ -1,29 +1,51 @@
 import http from "node:http";
 import { handler } from "../index.js";
 
-function handlerWrapper({ handler, event, res }) {
-  handler(event)
-    .then((resp) => {
-      // Lambda allows bar JSON responses and looks for 'statusCode' to differentiate. We do the
-      // same here.
-      if (resp.statusCode === undefined) {
-        resp = {
-          statusCode: 200,
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(resp),
-        };
-      }
-
+function staticProxy({ event, res }) {
+  const { path } = event.requestContext.http;
+  http
+    .get(`http://localhost:4000/${path}`, (resp) => {
       res.statusCode = resp.statusCode;
       for (const [k, v] of Object.entries(resp.headers)) {
         res.setHeader(k, v);
       }
-      if (resp.cookies?.length > 0) {
-        res.setHeader("Set-Cookie", resp.cookies);
+      resp.pipe(res);
+    })
+    .on("error", (err) => {
+      throw err;
+    });
+}
+
+function handlerWrapper({ handler, event, res }) {
+  handler(event)
+    .then((resp) => {
+      if (
+        resp.statusCode === 404 &&
+        event.requestContext.http.method === "GET"
+      ) {
+        staticProxy({ event, res });
+      } else {
+        // Lambda allows bar JSON responses and looks for 'statusCode' to differentiate. We do the
+        // same here.
+        if (resp.statusCode === undefined) {
+          resp = {
+            statusCode: 200,
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify(resp),
+          };
+        }
+
+        res.statusCode = resp.statusCode;
+        for (const [k, v] of Object.entries(resp.headers)) {
+          res.setHeader(k, v);
+        }
+        if (resp.cookies?.length > 0) {
+          res.setHeader("Set-Cookie", resp.cookies);
+        }
+        res.end(resp.body, "utf8");
       }
-      res.end(resp.body, "utf8");
     })
     .catch((err) => {
       throw err;
