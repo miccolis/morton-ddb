@@ -4,16 +4,16 @@ import {
   parseJSONRequest,
   extractAllowedProperties,
   checkSession,
-} from "./helpers.js";
-import { validateDomain } from "./domains.js";
+} from "../lib/helpers.js";
+import { validateDomain } from "../lib/domains.js";
 
 /**
- * @typedef {import('./types').Domain } Domain
- * @typedef {import('./types').DynamoDBReturnValue} DynamoDBReturnValue
+ * @typedef {import('../types').Domain } Domain
+ * @typedef {import('../types').DynamoDBReturnValue} DynamoDBReturnValue
  */
 
 /**
- * @param {import('./types').PathHandlerOptions} options
+ * @param {import('../types').PathHandlerOptions} options
  */
 export const domainUpdateHandler = async ({
   params: { domain: domainId },

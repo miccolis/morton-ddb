@@ -1,12 +1,12 @@
-import { getAccount } from "./accounts.js";
-import { HttpError, checkSession } from "./helpers.js";
+import { getAccount } from "../lib/accounts.js";
+import { HttpError, checkSession } from "../lib/helpers.js";
 
 /**
- * @typedef {import('./types').Account} Account
+ * @typedef {import('../types').Account} Account
  */
 
 /**
- * @param {import('./types').PathHandlerOptions} options
+ * @param {import('../types').PathHandlerOptions} options
  * @return {Promise<Account>}
  */
 export const accountGetHandler = async ({ event, ddbClient, config }) => {

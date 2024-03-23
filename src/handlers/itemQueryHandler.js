@@ -2,9 +2,9 @@ import { QueryCommand, BatchGetCommand } from "@aws-sdk/lib-dynamodb";
 import booleanDisjoint from "@turf/boolean-disjoint";
 import buffer from "@turf/buffer";
 
-import { HttpError, getCurrentUser } from "./helpers.js";
-import { coordsToMorton } from "./geoIndex.js";
-import { getDomain, validateDomainAccess } from "./domains.js";
+import { HttpError, getCurrentUser } from "../lib/helpers.js";
+import { coordsToMorton } from "../lib/geoIndex.js";
+import { getDomain, validateDomainAccess } from "../lib/domains.js";
 
 /**
  * @typedef {import('geojson').Geometry} Geometry
@@ -103,8 +103,8 @@ export function generateFilterGeoms(query) {
 }
 
 /**
- * @param {import('./types').PathHandlerOptions} options
- * @return {Promise<import('./types').ItemCollection>}
+ * @param {import('../types').PathHandlerOptions} options
+ * @return {Promise<import('../types').ItemCollection>}
  */
 export const itemQueryHandler = async ({
   params: { domain: domainId },

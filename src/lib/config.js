@@ -1,6 +1,6 @@
 /**
  * @param {boolean} isTestRun
- * @return {import('./types').Config}
+ * @return {import('../types').Config}
  */
 export const loadConfig = (isTestRun) => {
   if (isTestRun) {

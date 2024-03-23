@@ -1,9 +1,9 @@
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
-import { HttpError, parseJSONRequest, checkSession } from "./helpers.js";
-import { validateDomain } from "./domains.js";
+import { HttpError, parseJSONRequest, checkSession } from "../lib/helpers.js";
+import { validateDomain } from "../lib/domains.js";
 
 /**
- * @param {import('./types').PathHandlerOptions} options
+ * @param {import('../types').PathHandlerOptions} options
  */
 export const domainCreateHandler = async ({
   params: { domain: domainId },
@@ -23,7 +23,7 @@ export const domainCreateHandler = async ({
 
   const owners = [username];
 
-  /** @type {import('./types').StoredDomain} */
+  /** @type {import('../types').StoredDomain} */
   const item = {
     partition: "_domain",
     sort: domainId,

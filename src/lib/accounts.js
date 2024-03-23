@@ -2,9 +2,9 @@ import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { HttpError } from "./helpers.js";
 
 /**
- * @typedef {import('./types').Account} Account
- * @typedef {import('./types').StoredAccount} StoredAccount
- * @typedef {import('./types').Config} Config
+ * @typedef {import('../types').Account} Account
+ * @typedef {import('../types').StoredAccount} StoredAccount
+ * @typedef {import('../types').Config} Config
  */
 
 /**

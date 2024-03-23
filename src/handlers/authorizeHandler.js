@@ -1,9 +1,9 @@
 import { compare } from "bcrypt";
-import { getAccount } from "./accounts.js";
-import { HttpError, generateJWT } from "./helpers.js";
+import { getAccount } from "../lib/accounts.js";
+import { HttpError, generateJWT } from "../lib/helpers.js";
 
 /**
- * @param {import('./types').PathHandlerOptions} options
+ * @param {import('../types').PathHandlerOptions} options
  */
 export const authorizeHandler = async ({ event, ddbClient, config }) => {
   if (

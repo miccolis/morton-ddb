@@ -1,6 +1,6 @@
 import t from "tap";
 
-import { buildTileIndex } from "../lib/geoIndex.js";
+import { buildTileIndex } from "../src/lib/geoIndex.js";
 
 t.test("buildTileIndex - point", (t) => {
   const feature = {

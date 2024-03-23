@@ -1,7 +1,7 @@
 import t from "tap";
 
-import { loadConfig } from "../lib/config.js";
-import { generateJWT } from "../lib/helpers.js";
+import { loadConfig } from "../src/lib/config.js";
+import { generateJWT } from "../src/lib/helpers.js";
 
 import { handler } from "../index.js";
 

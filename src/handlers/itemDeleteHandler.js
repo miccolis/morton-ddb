@@ -1,13 +1,13 @@
 import { QueryCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { getDomain } from "./domains.js";
-import { HttpError, checkSession } from "./helpers.js";
+import { getDomain } from "../lib/domains.js";
+import { HttpError, checkSession } from "../lib/helpers.js";
 
 /**
  * @typedef {import('@aws-sdk/lib-dynamodb').BatchWriteCommandInput} BatchWriteCommandInput
  */
 
 /**
- * @param {import('./types').PathHandlerOptions} options
+ * @param {import('../types').PathHandlerOptions} options
  */
 export const itemDeleteHandler = async ({
   params: { domain: domainId, item: itemId },

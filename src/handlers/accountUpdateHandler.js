@@ -5,14 +5,14 @@ import {
   parseJSONRequest,
   extractAllowedProperties,
   checkSession,
-} from "./helpers.js";
-import { validateAccount } from "./accounts.js";
+} from "../lib/helpers.js";
+import { validateAccount } from "../lib/accounts.js";
 
 /**
- * @typedef {import('./types').Account } Account
- * @typedef {import('./types').StoredAccount } StoredAccount
- * @typedef {import('./types').DynamoDBReturnValue} DynamoDBReturnValue
- * @typedef {import('./types').PathHandlerOptions} PathHandlerOptions
+ * @typedef {import('../types').Account } Account
+ * @typedef {import('../types').StoredAccount } StoredAccount
+ * @typedef {import('../types').DynamoDBReturnValue} DynamoDBReturnValue
+ * @typedef {import('../types').PathHandlerOptions} PathHandlerOptions
  */
 
 /**

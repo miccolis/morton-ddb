@@ -1,8 +1,8 @@
-import { getDomain, validateDomainAccess } from "./domains.js";
-import { HttpError, getCurrentUser } from "./helpers.js";
+import { getDomain, validateDomainAccess } from "../lib/domains.js";
+import { HttpError, getCurrentUser } from "../lib/helpers.js";
 
 /**
- * @param {import('./types').PathHandlerOptions} options
+ * @param {import('../types').PathHandlerOptions} options
  */
 export const domainGetHandler = async ({
   params: { domain: domainId },

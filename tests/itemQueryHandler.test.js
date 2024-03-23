@@ -2,12 +2,12 @@ import t from "tap";
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { itemCreateHandler } from "../lib/itemCreateHandler.js";
-import { domainCreateHandler } from "../lib/domainCreateHandler.js";
-import { loadConfig } from "../lib/config.js";
-import { generateJWT } from "../lib/helpers.js";
+import { itemCreateHandler } from "../src/handlers/itemCreateHandler.js";
+import { domainCreateHandler } from "../src/handlers/domainCreateHandler.js";
+import { loadConfig } from "../src/lib/config.js";
+import { generateJWT } from "../src/lib/helpers.js";
 
-import { itemQueryHandler } from "../lib/itemQueryHandler.js";
+import { itemQueryHandler } from "../src/handlers/itemQueryHandler.js";
 
 t.test("itemQueryHandler - fetch bbox", async (t) => {
   const config = loadConfig(true);

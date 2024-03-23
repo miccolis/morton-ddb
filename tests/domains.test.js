@@ -1,6 +1,6 @@
 import t from "tap";
 
-import { validateDomain } from "../lib/domains.js";
+import { validateDomain } from "../src/lib/domains.js";
 
 t.test("validateDomain", (t) => {
   try {

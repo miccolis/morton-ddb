@@ -2,8 +2,8 @@ import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { HttpError } from "./helpers.js";
 
 /**
- * @typedef {import('./types').Domain} Domain
- * @typedef {import('./types').Config} Config
+ * @typedef {import('../types').Domain} Domain
+ * @typedef {import('../types').Config} Config
  */
 
 /**

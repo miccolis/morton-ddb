@@ -8,7 +8,7 @@
         "node": "20.x"
     },
     "scripts": {
-        "lint": "eslint index.js lib/*.js",
+        "lint": "eslint index.js src/*/*.js",
         "format": "prettier --write .",
         "check": "tsc",
         "pretest": "IS_TEST_RUN=1 node tests/before.js",

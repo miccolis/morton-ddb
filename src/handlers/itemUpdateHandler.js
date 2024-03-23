@@ -3,24 +3,24 @@ import {
   BatchWriteCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { getDomain } from "./domains.js";
-import { buildTileIndex } from "./geoIndex.js";
+import { getDomain } from "../lib/domains.js";
+import { buildTileIndex } from "../lib/geoIndex.js";
 import {
   HttpError,
   parseJSONRequest,
   extractAllowedProperties,
   checkSession,
-} from "./helpers.js";
+} from "../lib/helpers.js";
 
 /**
  * @typedef {import('@aws-sdk/lib-dynamodb').BatchWriteCommandInput} BatchWriteCommandInput
- * @typedef {import('./types').DynamoDBReturnValue} DynamoDBReturnValue
- * @typedef {import('./types').Item} Item
+ * @typedef {import('../types').DynamoDBReturnValue} DynamoDBReturnValue
+ * @typedef {import('../types').Item} Item
  */
 
 /**
- * @param {import('./types').PathHandlerOptions} options
- * @return{Promise<import('./types').Item>}
+ * @param {import('../types').PathHandlerOptions} options
+ * @return{Promise<import('../types').Item>}
  */
 export const itemUpdateHandler = async ({
   params: { domain: domainId, item: itemId },

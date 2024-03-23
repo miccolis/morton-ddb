@@ -1,11 +1,11 @@
 import { hash } from "bcrypt";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
-import { HttpError, parseJSONRequest, checkSession } from "./helpers.js";
-import { validateAccount } from "./accounts.js";
+import { HttpError, parseJSONRequest, checkSession } from "../lib/helpers.js";
+import { validateAccount } from "../lib/accounts.js";
 
 /**
- * @param {import('./types').PathHandlerOptions} options
- * @return {Promise<import('./types').Account>}
+ * @param {import('../types').PathHandlerOptions} options
+ * @return {Promise<import('../types').Account>}
  */
 export const accountCreateHandler = async ({
   event,
@@ -18,7 +18,7 @@ export const accountCreateHandler = async ({
 
   validateAccount({ username, password, email });
 
-  /** @type {import('./types').StoredAccount} */
+  /** @type {import('../types').StoredAccount} */
   const item = {
     partition: "_accounts",
     sort: username,

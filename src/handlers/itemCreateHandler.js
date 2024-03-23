@@ -1,16 +1,16 @@
 import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
-import { buildTileIndex } from "./geoIndex.js";
-import { getDomain } from "./domains.js";
-import { HttpError, parseJSONRequest, checkSession } from "./helpers.js";
+import { buildTileIndex } from "../lib/geoIndex.js";
+import { getDomain } from "../lib/domains.js";
+import { HttpError, parseJSONRequest, checkSession } from "../lib/helpers.js";
 
 /**
  * @typedef {import('@aws-sdk/lib-dynamodb').BatchWriteCommandInput} BatchWriteCommandInput
  */
 
 /**
- * @param {import('./types').PathHandlerOptions} options
- * @return{Promise<import('./types').Item>}
+ * @param {import('../types').PathHandlerOptions} options
+ * @return{Promise<import('../types').Item>}
  */
 export const itemCreateHandler = async ({
   params: { domain: domainId },

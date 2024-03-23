@@ -1,9 +1,9 @@
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { checkSession } from "./helpers.js";
+import { checkSession } from "../lib/helpers.js";
 
 /**
- * @param {import('./types').PathHandlerOptions} options
- * @return {Promise<{ domains: Array<Partial<import('./types').Domain>>}>}
+ * @param {import('../types').PathHandlerOptions} options
+ * @return {Promise<{ domains: Array<Partial<import('../types').Domain>>}>}
  */
 export const domainListHandler = async ({ event, ddbClient, config }) => {
   const { sub: username } = await checkSession(event, config.jwtSecret);

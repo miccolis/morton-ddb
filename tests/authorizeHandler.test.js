@@ -2,11 +2,11 @@ import t from "tap";
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { loadConfig } from "../lib/config.js";
-import { generateJWT } from "../lib/helpers.js";
+import { loadConfig } from "../src/lib/config.js";
+import { generateJWT } from "../src/lib/helpers.js";
 
-import { authorizeHandler } from "../lib/authorizeHandler.js";
-import { accountCreateHandler } from "../lib/accountCreateHandler.js";
+import { authorizeHandler } from "../src/handlers/authorizeHandler.js";
+import { accountCreateHandler } from "../src/handlers/accountCreateHandler.js";
 
 t.test("authorizeHandler - bad content type", async (t) => {
   const { dynamodbClientConfig, dynamodbTableName } = loadConfig(true);

@@ -2,30 +2,31 @@ import { match } from "path-to-regexp";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
-import { HttpError } from "./lib/helpers.js";
-import { loadConfig } from "./lib/config.js";
+import { HttpError } from "./src/lib/helpers.js";
+import { loadConfig } from "./src/lib/config.js";
 
-import { accountCreateHandler } from "./lib/accountCreateHandler.js";
-import { accountGetHandler } from "./lib/accountGetHandler.js";
-import { accountUpdateHandler } from "./lib/accountUpdateHandler.js";
-import { authorizeHandler } from "./lib/authorizeHandler.js";
-import { domainCreateHandler } from "./lib/domainCreateHandler.js";
-import { domainGetHandler } from "./lib/domainGetHandler.js";
-import { domainListHandler } from "./lib/domainListHandler.js";
-import { domainUpdateHandler } from "./lib/domainUpdateHandler.js";
-import { itemCreateHandler } from "./lib/itemCreateHandler.js";
-import { itemDeleteHandler } from "./lib/itemDeleteHandler.js";
-import { itemGetHandler } from "./lib/itemGetHandler.js";
-import { itemListHandler } from "./lib/itemListHandler.js";
-import { itemUpdateHandler } from "./lib/itemUpdateHandler.js";
-import { itemQueryHandler } from "./lib/itemQueryHandler.js";
+import { accountCreateHandler } from "./src/handlers/accountCreateHandler.js";
+import { accountGetHandler } from "./src/handlers/accountGetHandler.js";
+import { accountUpdateHandler } from "./src/handlers/accountUpdateHandler.js";
+import { authorizeHandler } from "./src/handlers/authorizeHandler.js";
+import { domainCreateHandler } from "./src/handlers/domainCreateHandler.js";
+import { domainGetHandler } from "./src/handlers/domainGetHandler.js";
+import { domainListHandler } from "./src/handlers/domainListHandler.js";
+import { domainUpdateHandler } from "./src/handlers/domainUpdateHandler.js";
+import { itemCreateHandler } from "./src/handlers/itemCreateHandler.js";
+import { itemDeleteHandler } from "./src/handlers/itemDeleteHandler.js";
+import { itemGetHandler } from "./src/handlers/itemGetHandler.js";
+import { itemListHandler } from "./src/handlers/itemListHandler.js";
+import { itemUpdateHandler } from "./src/handlers/itemUpdateHandler.js";
+import { itemQueryHandler } from "./src/handlers/itemQueryHandler.js";
+import { logoutHandler } from "./src/handlers/logoutHandler.js";
 
 /**
  * @typedef {import('aws-lambda').APIGatewayProxyEventV2} Event
  *
- * @typedef {import('./lib/types').HttpMethod} HttpMethod
- * @typedef {import('./lib/types').PathHandler} PathHandler
- * @typedef {import('./lib/types').Response} Response
+ * @typedef {import('./src/types').HttpMethod} HttpMethod
+ * @typedef {import('./src/types').PathHandler} PathHandler
+ * @typedef {import('./src/types').Response} Response
  */
 
 /** @type {Array<[PathHandler, HttpMethod, string]>} */
@@ -44,6 +45,7 @@ const pathHandlers = [
   [accountGetHandler, "GET", "/account"],
   [accountUpdateHandler, "PATCH", "/account/:account"],
   [authorizeHandler, "POST", "/authorize"],
+  [logoutHandler, "GET", "/logout"],
 ];
 
 /**

@@ -85,7 +85,10 @@ export async function checkSession(event, jwtSecret) {
         const { payload } = await jwtVerify(jwt, jwtSecret);
         return payload;
       } catch (e) {
-        if (e.code === "ERR_JWS_SIGNATURE_VERIFICATION_FAILED") {
+        if (
+          e.code === "ERR_JWS_SIGNATURE_VERIFICATION_FAILED" ||
+          e.code === "ERR_JWS_INVALID"
+        ) {
           throw new HttpError(403);
         } else {
           throw e;

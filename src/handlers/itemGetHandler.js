@@ -1,10 +1,10 @@
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
-import { getDomain, validateDomainAccess } from "./domains.js";
-import { HttpError, getCurrentUser } from "./helpers.js";
+import { getDomain, validateDomainAccess } from "../lib/domains.js";
+import { HttpError, getCurrentUser } from "../lib/helpers.js";
 
 /**
- * @param {import('./types').PathHandlerOptions} options
- * @return {Promise<import('./types').Item>}
+ * @param {import('../types').PathHandlerOptions} options
+ * @return {Promise<import('../types').Item>}
  */
 export const itemGetHandler = async ({
   params: { domain: domainId, item: itemId },

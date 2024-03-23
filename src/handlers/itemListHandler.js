@@ -1,10 +1,10 @@
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { getDomain } from "./domains.js";
-import { HttpError } from "./helpers.js";
+import { getDomain } from "../lib/domains.js";
+import { HttpError } from "../lib/helpers.js";
 
 /**
- * @param {import('./types').PathHandlerOptions} options
- * @return {Promise<import('./types').ItemCollection>}
+ * @param {import('../types').PathHandlerOptions} options
+ * @return {Promise<import('../types').ItemCollection>}
  */
 export const itemListHandler = async ({
   params: { domain: domainId },
