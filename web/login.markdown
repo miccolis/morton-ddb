@@ -4,20 +4,27 @@ layout: default
 localScripts:
 -  login.js
 ---
-Please enter your credentials
 
-<form action="http://localhost:8080/authorize" method="post">
-<div>
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="username" />
+<div class="modal is-active">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <p>Please enter your credentials</p>
+    <form action="http://localhost:8080/authorize" method="post">
+      <div class="mb-2">
+        <input id="name" class="input" type="text" name="username" placeholder="Username"/>
+      </div>
+      <div class="mb-2">
+        <input
+          id="password"
+          class="input"
+          type="password"
+          name="password"
+          placeholder="Password"
+        />
+      </div>
+      <div>
+        <button id="submit" class="button" name="submit">Login</button>
+      </div>
+    </form>
+  </div>
 </div>
-<div>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" />
-</div>
-
-<div>
-      <button id="submit" name="submit">Login</button>
-</div>
-
-</form>
