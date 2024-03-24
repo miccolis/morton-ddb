@@ -6,6 +6,7 @@ localScripts:
 ---
 
 <span class="js-modal-trigger" data-target="domain-create-modal">Add</span>
+
 <div class="fixed-grid">
   <div id='target' class="grid">
     <p>Loading</p>

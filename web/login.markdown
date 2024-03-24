@@ -2,7 +2,7 @@
 title: Login
 layout: default
 localScripts:
--  login.js
+  - login.js
 ---
 
 <div class="modal is-active">

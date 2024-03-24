@@ -4,6 +4,7 @@ layout: default
 remoteScripts:
   - https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js
 ---
+
 <link
   href="https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css"
   rel="stylesheet"
