@@ -104,13 +104,18 @@ function setupCreateDomain() {
 
       let attributes = {};
       for (const [k, v] of data) {
-        attributes[k] = v;
+        if (
+          // Two elements are expected to be integers
+          (k === "zoom" || k === "ttl") &&
+          typeof v === "string" // Makes typechecking happy.
+        ) {
+          attributes[k] = parseInt(v);
+        } else {
+          attributes[k] = v;
+        }
       }
 
       const { domainId, ...body } = attributes;
-
-      // Two elements are expected to be integers
-      ["zoom", "ttl"].forEach((k) => (body[k] = parseInt(body[k])));
 
       // TODO disable form
       // show loading indicator

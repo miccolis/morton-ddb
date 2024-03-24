@@ -29,10 +29,11 @@ export const domainListHandler = async ({ event, ddbClient, config }) => {
   );
 
   return {
-    domains: domains.map(({ domainId, version, name }) => ({
+    domains: domains.map(({ domainId, name, created, version }) => ({
       domainId,
-      version,
       name,
+      created,
+      version,
     })),
   };
 };
