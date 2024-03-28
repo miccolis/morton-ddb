@@ -7,7 +7,11 @@ import { handler } from "../index.js";
 
 const validCookie = await (async () => {
   const { jwtSecret } = loadConfig(true);
-  const jwt = await generateJWT("test-username", jwtSecret);
+  const jwt = await generateJWT({
+    username: "test-username",
+    jwtSecret,
+    maxage: 60,
+  });
   return `auth=${jwt}`;
 })();
 

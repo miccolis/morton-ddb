@@ -38,7 +38,14 @@ export const authorizeHandler = async ({ event, ddbClient, config }) => {
 
   // TODO log access time
 
-  const jwt = await generateJWT(username, config.jwtSecret);
+  // 6 hours
+  const maxage = 21600;
+
+  const jwt = await generateJWT({
+    username,
+    jwtSecret: config.jwtSecret,
+    maxage,
+  });
 
   return {
     statusCode: 303,
@@ -47,7 +54,8 @@ export const authorizeHandler = async ({ event, ddbClient, config }) => {
       location: config.appURI,
     },
     cookies: [
-      `auth=${jwt}; Max-Age=21600 SameSite=Strict; Path=/; Secure; HttpOnly`,
+      // `auth=${jwt}; Max-Age=${maxage}; SameSite=Strict; Path=/; Secure; HttpOnly`,
+      `auth=${jwt}; Max-Age=${maxage}; SameSite=Strict; Path=/; HttpOnly`,
     ],
   };
 };

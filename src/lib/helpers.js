@@ -112,18 +112,20 @@ export async function getCurrentUser(event, jwtSecret) {
 }
 
 /**
- * @param {string} username
- * @param {Uint8Array} jwtSecret
+ * @param {object} options
+ * @param {string} options.username
+ * @param {Uint8Array} options.jwtSecret
+ * @param {number} options.maxage
  * @return {Promise<string>}
  */
-export async function generateJWT(username, jwtSecret) {
+export async function generateJWT({ username, jwtSecret, maxage }) {
   const alg = "HS256";
 
   const jwt = await new SignJWT()
     .setProtectedHeader({ alg })
     .setIssuedAt()
     .setSubject(username)
-    .setExpirationTime("6h")
+    .setExpirationTime(`${maxage}s`)
     .sign(jwtSecret);
 
   return jwt;

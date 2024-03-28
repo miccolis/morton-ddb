@@ -51,7 +51,11 @@ t.test("authorizeHandler - verify password", async (t) => {
     new DynamoDBClient(dynamodbClientConfig),
   );
 
-  const authCookie = `auth=${await generateJWT("test-username", jwtSecret)}`;
+  const authCookie = `auth=${await generateJWT({
+    username: "test-username",
+    jwtSecret,
+    maxage: 60,
+  })}`;
 
   await accountCreateHandler({
     event: {

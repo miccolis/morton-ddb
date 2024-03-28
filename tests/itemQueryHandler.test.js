@@ -15,7 +15,11 @@ t.test("itemQueryHandler - fetch bbox", async (t) => {
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );
-  const authCookie = `auth=${await generateJWT("test-username", jwtSecret)}`;
+  const authCookie = `auth=${await generateJWT({
+    username: "test-username",
+    jwtSecret,
+    maxage: 60,
+  })}`;
 
   const domain = "test-itemQueryHandler-fetchBbox";
 
@@ -93,7 +97,11 @@ t.test("itemQueryHandler - fetch point", async (t) => {
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );
-  const authCookie = `auth=${await generateJWT("test-username", jwtSecret)}`;
+  const authCookie = `auth=${await generateJWT({
+    username: "test-username",
+    jwtSecret,
+    maxage: 60,
+  })}`;
 
   const domain = "test-itemQueryHandler-fetchPoint";
 

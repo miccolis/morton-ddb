@@ -31,4 +31,5 @@ localScripts:
       sans-serif;
   }
 </style>
+
 <div id="map"></div>

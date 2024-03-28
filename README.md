@@ -1,5 +1,9 @@
 ## Morton DDB
 
+Stores & serves geospatial data using AWS DynamoDB and AWS Lambda. This is a hobby project I'm using to revisit a few, mostly unrelated, ideas; z-order indexed data in DynamoDB, Lambda function URLs, a middleware-less & minimal dependency node.js server, Typescript type checking & vanilla Javascript, and web components too. I'm having to implement auth as well because the AWS options for Lambda URIs are limited.
+
+## API
+
 ```
 GET    /domains - List domains
 GET    /d/<domain-id> - Get a domain
@@ -16,11 +20,12 @@ DELETE /d/<domain-id>/item/<item-uuid> - Delete a single feature
 GET    /d/<domain-id>/query?bbox=<minx>,<miny>,<maxx>,<maxy> - Query for features in a bounding box
 GET    /d/<domain-id>/query?point=<x>,<y> - Query for features near a point
 
-GET    /account - Not implemented
+GET    /account - Get info about logged in user.
 POST   /account - Create an account
 PATCH  /account/<account-id> - Update an account
 
-POST   /authorize
+POST   /authorize - Should probably change this to /login
+GET    /logout
 ```
 
 ## Configuration
@@ -31,31 +36,6 @@ POST   /authorize
 | DYNAMODB_ENDPOINT    | Overrides the default DynamoDB endpoint, useful for local testing | `http://localhost:8000` |
 | JWT_SECRET           | Hex encoded HS257 secret.                                         |                         |
 | APP_URI              | Base URI for the web application                                  | `http://localhost:8080` |
-
-## Indexing
-
-https://docs.mapbox.com/help/glossary/zoom-level/
-
-Related reading https://aws.amazon.com/blogs/database/z-order-indexing-for-multifaceted-queries-in-amazon-dynamodb-part-1/
-
-## Development
-
-https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
-
-Quickest way to get running locally, run tests and then start the local server
-in test mode;
-
-```
-npm test
-IS_TEST_RUN=true node ./scripts/local.js
-```
-
-The front end is can be started using jekyll
-
-```
-cd web
-bundler exec jekyll serve
-```
 
 ## Deployment
 
@@ -69,11 +49,49 @@ export FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name $STACK_NAM
 aws lambda update-function-code --function-name $FUNCTION_ARN --zip-file fileb://dist/bundle.zip
 ```
 
-## Tests
+## Database Index Design
+
+| Partition           | Sort          | IndexedDomain     | Morton    |
+| ------------------- | ------------- | ----------------- | --------- |
+| <domainId>          | item:<itemid> | n/a               | n/a       |
+| <domainId>:<itemId> | <morton>      | <domainId>:<zoom> | <integer> |
+| \_accounts          | <accountId>   | n/a               | n/a       |
+| \_domains           | <domainId>    | n/a               | n/a       |
+
+Indexed domain is a secondary partition with a Mortan as a numeric sort key.
+TODO These should have more generic names.
+
+Related reading
+
+- https://aws.amazon.com/blogs/database/z-order-indexing-for-multifaceted-queries-in-amazon-dynamodb-part-1/
+- https://docs.mapbox.com/help/glossary/zoom-level/
+
+## Development
+
+https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
 
 ### Prerequisites
 
 Test suite assumes you've got Docker available so that it can run "DynamoDB Local". It will also attempt to use port 8000 for the same. Currently tests also assume that DynamodDB local is also running. See notes below...
+
+### Running local
+
+Quickest way to get running locally, run tests and then start the local server
+in test mode;
+
+```
+npm test
+IS_TEST_RUN=true node ./scripts/local.js
+```
+
+The front end can be started using jekyll.
+
+```
+cd web
+bundler exec jekyll serve
+```
+
+A proxy exists in the local server sot that that API and Static resouces can all be accessed at localhost:8080
 
 #### Notes on avoiding Docker Desktop
 
