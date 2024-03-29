@@ -1,7 +1,9 @@
-import { hash } from "bcrypt";
+import bcryptjs from "bcryptjs";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { HttpError, parseJSONRequest, checkSession } from "../lib/helpers.js";
 import { validateAccount } from "../lib/accounts.js";
+
+const { genSalt, hash } = bcryptjs;
 
 /**
  * @param {import('../types').PathHandlerOptions} options
@@ -18,6 +20,8 @@ export const accountCreateHandler = async ({
 
   validateAccount({ username, password, email });
 
+  const salt = await genSalt(10);
+
   /** @type {import('../types').StoredAccount} */
   const item = {
     partition: "_accounts",
@@ -28,7 +32,7 @@ export const accountCreateHandler = async ({
     email,
     // TODO emailVerified
     created: new Date().toISOString(),
-    passwordHash: await hash(password, 10),
+    passwordHash: await hash(password, salt),
     passwordResetRequired: true,
   };
 

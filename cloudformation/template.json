@@ -1,4 +1,10 @@
 {
+    "Parameters" : {
+        "JWTSecret" : {
+            "Type": "String",
+            "NoEcho": true
+        }
+    },
     "Resources": {
         "DynamoDBTable": {
             "Type": "AWS::DynamoDB::Table",
@@ -67,7 +73,8 @@
                 "Environment": {
                     "Variables": {
                         "DYNAMODB_TABLE_NAME": { "Ref": "DynamoDBTable" },
-                        "ZOOMS": "12"
+                        "APP_URI": "",
+                        "JWT_SECRET": { "Ref": "JWTSecret" }
                     }
                 }
             }

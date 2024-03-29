@@ -1,7 +1,8 @@
-import { compare } from "bcrypt";
+import bcrypt from "bcryptjs";
 import { getAccount } from "../lib/accounts.js";
 import { HttpError, generateJWT } from "../lib/helpers.js";
 
+const { compare } = bcrypt;
 /**
  * @param {import('../types').PathHandlerOptions} options
  */

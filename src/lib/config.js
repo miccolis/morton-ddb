@@ -10,7 +10,7 @@ export const loadConfig = (isTestRun) => {
         endpoint: "http://localhost:8000",
       },
       // import { generateSecret } from "jose";
-      // (await generateSecret("HS257")).export().toString("hex");
+      // (await generateSecret("HS256")).export().toString("hex");
       jwtSecret: new TextEncoder().encode(
         "931aeead46d069f4598e7b18d9dc95db3636e05357f814bce363f61b022862ba",
       ),

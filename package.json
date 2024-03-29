@@ -3,18 +3,18 @@
     "version": "1.0.0",
     "description": "Morton DDB",
     "type": "module",
-    "main": "index.js",
+    "main": "src/index.js",
     "engines": {
         "node": "20.x"
     },
     "scripts": {
-        "lint": "eslint index.js src/*/*.js web/assets/scripts/*.js",
+        "lint": "eslint src/index.js src/*/*.js web/assets/scripts/*.js",
         "format": "prettier --write .",
         "check": "tsc",
         "pretest": "IS_TEST_RUN=1 node tests/before.js",
         "test": "IS_TEST_RUN=1 tap tests/*.test.js",
         "all": "prettier -c . && npm run lint && npm run check && npm run test;",
-        "bundle": "esbuild index.js --bundle --platform=node  > dist/index.js"
+        "bundle": "esbuild src/index.js --bundle --platform=node  > ./dist/index.js"
     },
     "author": "",
     "license": "ISC",
@@ -24,7 +24,7 @@
         "@mapbox/tile-cover": "^3.0.2",
         "@turf/boolean-disjoint": "^6.5.0",
         "@turf/buffer": "^6.5.0",
-        "bcrypt": "^5.1.1",
+        "bcryptjs": "^2.4.3",
         "jose": "^5.2.2",
         "morton": "^1.0.2",
         "path-to-regexp": "^6.2.1",

@@ -34,7 +34,7 @@ GET    /logout
 | -------------------- | ----------------------------------------------------------------- | ----------------------- |
 | DYNAMODB_TABLE_NAME  | DynamoDB table name                                               | `my-table`              |
 | DYNAMODB_ENDPOINT    | Overrides the default DynamoDB endpoint, useful for local testing | `http://localhost:8000` |
-| JWT_SECRET           | Hex encoded HS257 secret.                                         |                         |
+| JWT_SECRET           | Hex encoded HS256 secret.                                         |                         |
 | APP_URI              | Base URI for the web application                                  | `http://localhost:8080` |
 
 ## Deployment
@@ -42,6 +42,8 @@ GET    /logout
 ```
 export STACK_NAME=morton-test
 aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name $STACK_NAME --no-execute-changeset --capabilities CAPABILITY_IAM
+
+# Note: on first deploy you'll need to `--parameter-overrides JWTSecret=...`
 
 export STACK_NAME=morton-test
 export FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`PublicReadLambdaArn`].OutputValue' --output text)

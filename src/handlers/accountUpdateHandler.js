@@ -1,4 +1,4 @@
-import { hash } from "bcrypt";
+import bcryptjs from "bcryptjs";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import {
   HttpError,
@@ -7,6 +7,8 @@ import {
   checkSession,
 } from "../lib/helpers.js";
 import { validateAccount } from "../lib/accounts.js";
+
+const { genSalt, hash } = bcryptjs;
 
 /**
  * @typedef {import('../types').Account } Account
@@ -41,7 +43,9 @@ export const accountUpdateHandler = async ({
 
   const { version, password, ...fieldValues } = accountUpdates;
 
-  fieldValues.passwordHash = await hash(password, 10);
+  const salt = await genSalt(10);
+
+  fieldValues.passwordHash = await hash(password, salt);
   fieldValues.passwordResetRequired = false;
 
   const update = {

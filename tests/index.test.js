@@ -3,7 +3,7 @@ import t from "tap";
 import { loadConfig } from "../src/lib/config.js";
 import { generateJWT } from "../src/lib/helpers.js";
 
-import { handler } from "../index.js";
+import { handler } from "../src/index.js";
 
 const validCookie = await (async () => {
   const { jwtSecret } = loadConfig(true);

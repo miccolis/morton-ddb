@@ -1,5 +1,5 @@
 import http from "node:http";
-import { handler } from "../index.js";
+import { handler } from "../src/index.js";
 
 function staticProxy({ event, res }) {
   const { path } = event.requestContext.http;
