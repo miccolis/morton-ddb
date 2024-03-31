@@ -61,10 +61,20 @@
                 ]
             }
         },
-        "PublicReadLambda": {
+        "WebsiteBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": { "Fn::Sub": "${AWS::AccountId}-${AWS::StackName}-website" },
+                "WebsiteConfiguration": {
+                    "ErrorDocument": "error.html",
+                    "IndexDocument": "index.html"
+                }
+            }
+        },
+        "LambdaHandler": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-                "Role": { "Fn::GetAtt": ["PublicReadRole", "Arn"] },
+                "Role": { "Fn::GetAtt": ["LambdaHandlerRole", "Arn"] },
                 "Handler": "index.handler",
                 "Code": {
                     "ZipFile": "module.exports = { handler: function() { return 'hello world'; } }"
@@ -79,27 +89,27 @@
                 }
             }
         },
-        "PublicReadUrl": {
+        "LambdaHandlerURL": {
             "Type": "AWS::Lambda::Url",
             "Properties": {
                 "AuthType": "NONE",
-                "TargetFunctionArn": { "Ref": "PublicReadLambda" },
+                "TargetFunctionArn": { "Ref": "LambdaHandler" },
                 "Cors": {
                     "AllowMethods": ["GET"],
                     "AllowOrigins": ["*"]
                 }
             }
         },
-        "PublicReadPermission": {
+        "LambdaHandlerPermission": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "Action": "lambda:InvokeFunctionUrl",
-                "FunctionName": { "Ref": "PublicReadLambda" },
+                "FunctionName": { "Ref": "LambdaHandler" },
                 "FunctionUrlAuthType": "NONE",
                 "Principal": "*"
             }
         },
-        "PublicReadRole": {
+        "LambdaHandlerRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -146,12 +156,109 @@
                     }
                 ]
             }
+        },
+        "WebsiteCachePolicy": {
+            "Type" : "AWS::CloudFront::CachePolicy",
+            "Properties" : {
+                "CachePolicyConfig": {
+                    "DefaultTTL" : "5",
+                    "MaxTTL" : "30",
+                    "MinTTL" : "0",
+                    "Name": { "Fn::Sub": "${AWS::StackName}-S3-Origin"},
+                    "ParametersInCacheKeyAndForwardedToOrigin": {
+                        "EnableAcceptEncodingBrotli": true,
+                        "EnableAcceptEncodingGzip": true,
+                        "CookiesConfig" : {
+                            "CookieBehavior": "none"
+                        },
+                        "HeadersConfig" : {
+                            "HeaderBehavior": "none"
+                        },
+                        "QueryStringsConfig": {
+                            "QueryStringBehavior": "none"
+                        }
+                    }
+                }
+            }
+        },
+        "WebsiteRequestPolicy": {
+            "Type" : "AWS::CloudFront::OriginRequestPolicy",
+            "Properties" : {
+                "OriginRequestPolicyConfig": {
+                    "Name": { "Fn::Sub": "${AWS::StackName}-S3-Origin"},
+                    "CookiesConfig": {
+                        "CookieBehavior": "none"
+                    },
+                    "HeadersConfig": {
+                        "HeaderBehavior": "none"
+                    },
+                    "QueryStringsConfig": {
+                        "QueryStringBehavior": "none"
+                    }
+                }
+            }
+        },
+        "CloudfrontDistro": {
+            "Type": "AWS::CloudFront::Distribution",
+            "Properties": {
+                "DistributionConfig": {
+                    "Comment": { "Ref": "AWS::StackName" },
+                    "Enabled": false,
+                    "Origins": [
+                        {
+                            "Id": "LambdaBackend",
+                            "DomainName": {
+                                "Fn::Select": [
+                                    2,
+                                    {
+                                        "Fn::Split": [
+                                            "/",
+                                            { "Fn::GetAtt": ["LambdaHandlerURL", "FunctionUrl"] }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "CustomOriginConfig": {
+                                "OriginProtocolPolicy": "https-only"
+                            }
+                        },
+                        {
+                            "Id": "StaticWebsite",
+                            "DomainName": {
+                                "Fn::Sub": "${WebsiteBucket}.s3.${AWS::Region}.amazonaws.com"
+                            },
+                            "CustomOriginConfig": {
+                                "OriginProtocolPolicy": "https-only"
+                            }
+                        }
+                    ],
+                    "DefaultCacheBehavior": {
+                        "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
+                        "Compress": true,
+                        "TargetOriginId": "StaticWebsite",
+                        "ViewerProtocolPolicy": "redirect-to-https",
+                        "CachePolicyId":  { "Ref": "WebsiteCachePolicy" },
+                        "OriginRequestPolicyId": { "Ref": "WebsiteRequestPolicy" }
+                    },
+                    "CacheBehaviors": [
+                        {
+                            "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
+                            "Compress": true,
+                            "PathPattern": "/app/*",
+                            "TargetOriginId": "LambdaBackend",
+                            "ViewerProtocolPolicy": "redirect-to-https",
+                            "CachePolicyId":  { "Ref": "WebsiteCachePolicy" },
+                            "OriginRequestPolicyId": { "Ref": "WebsiteRequestPolicy" }
+                        }
+                    ]
+                }
+            }
         }
     },
     "Outputs": {
-        "PublicReadLambdaArn": {
+        "LambdaHandlerArn": {
             "Description": "Information about the value",
-            "Value": { "Fn::GetAtt": ["PublicReadLambda", "Arn"] }
+            "Value": { "Fn::GetAtt": ["LambdaHandler", "Arn"] }
         }
     }
 }
