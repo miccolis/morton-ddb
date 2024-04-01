@@ -46,10 +46,20 @@ aws cloudformation deploy --template-file ./cloudformation/template.json --stack
 # Note: on first deploy you'll need to `--parameter-overrides JWTSecret=...`
 
 export STACK_NAME=morton-test
-export FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`PublicReadLambdaArn`].OutputValue' --output text)
+export FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`LambdaHandlerArn`].OutputValue' --output text)
 
 cd dist && zip bundle.zip index.js
 aws lambda update-function-code --function-name $FUNCTION_ARN --zip-file fileb://dist/bundle.zip
+```
+
+
+```
+export STACK_NAME=morton-test
+export WEBSITE_BUCKET=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`WebsiteBucket`].OutputValue' --output text)
+
+bundler exec jekyll build
+aws s3 sync ./web/_site/ s3://${WEBSITE_BUCKET}/ --delete
+
 ```
 
 ## Database Index Design

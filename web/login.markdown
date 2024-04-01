@@ -9,7 +9,7 @@ localScripts:
   <div class="modal-background"></div>
   <div class="modal-content">
     <p>Please enter your credentials</p>
-    <form action="http://localhost:8080/authorize" method="post">
+    <form action="/app/authorize" method="post">
       <div class="mb-2">
         <input id="name" class="input" type="text" name="username" placeholder="Username"/>
       </div>

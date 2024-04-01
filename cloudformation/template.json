@@ -64,10 +64,31 @@
         "WebsiteBucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
-                "BucketName": { "Fn::Sub": "${AWS::AccountId}-${AWS::StackName}-website" },
-                "WebsiteConfiguration": {
-                    "ErrorDocument": "error.html",
-                    "IndexDocument": "index.html"
+                "BucketName": { "Fn::Sub": "${AWS::AccountId}-${AWS::StackName}-website" }
+            }
+        },
+        "WebsiteBucketPolicy": {
+            "Type" : "AWS::S3::BucketPolicy",
+            "Properties" : {
+                "Bucket" : { "Ref": "WebsiteBucket" },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": {
+                        "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "cloudfront.amazonaws.com"
+                        },
+                        "Action": "s3:GetObject",
+                        "Resource": { "Fn::Sub": "arn:aws:s3:::${WebsiteBucket}/*" },
+                        "Condition": {
+                            "StringEquals": {
+                                "AWS:SourceArn": {
+                                    "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistro}"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -198,12 +219,24 @@
                 }
             }
         },
+        "StaticWebsiteAccessControl": {
+            "Type" : "AWS::CloudFront::OriginAccessControl",
+            "Properties" : {
+                "OriginAccessControlConfig":{
+                    "Name" : { "Ref": "AWS::StackName" },
+                    "OriginAccessControlOriginType": "s3",
+                    "SigningBehavior" : "always",
+                    "SigningProtocol" : "sigv4"
+                }
+            }
+        },
         "CloudfrontDistro": {
             "Type": "AWS::CloudFront::Distribution",
             "Properties": {
                 "DistributionConfig": {
                     "Comment": { "Ref": "AWS::StackName" },
-                    "Enabled": false,
+                    "Enabled": true,
+                    "PriceClass": "PriceClass_100",
                     "Origins": [
                         {
                             "Id": "LambdaBackend",
@@ -224,11 +257,14 @@
                         },
                         {
                             "Id": "StaticWebsite",
+                            "OriginAccessControlId": {
+                                "Fn::Sub": "${StaticWebsiteAccessControl.Id}"
+                            },
                             "DomainName": {
                                 "Fn::Sub": "${WebsiteBucket}.s3.${AWS::Region}.amazonaws.com"
                             },
-                            "CustomOriginConfig": {
-                                "OriginProtocolPolicy": "https-only"
+                            "S3OriginConfig": {
+                                "OriginAccessIdentity": ""
                             }
                         }
                     ],
@@ -259,6 +295,10 @@
         "LambdaHandlerArn": {
             "Description": "Information about the value",
             "Value": { "Fn::GetAtt": ["LambdaHandler", "Arn"] }
+        },
+        "WebsiteBucket": {
+            "Description": "S3 Bucket used for static website files",
+            "Value": { "Ref": "WebsiteBucket" }
         }
     }
 }

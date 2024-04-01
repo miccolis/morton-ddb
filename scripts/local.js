@@ -17,14 +17,16 @@ function staticProxy({ event, res }) {
 }
 
 function handlerWrapper({ handler, event, res }) {
-  handler(event)
-    .then((resp) => {
-      if (
-        resp.statusCode === 404 &&
-        event.requestContext.http.method === "GET"
-      ) {
-        staticProxy({ event, res });
-      } else {
+  const path = event.requestContext.http.path;
+
+  // Matches cloudformation setup which routes all requests that start with /app
+  // to the lambda.
+  if (path.startsWith('/app')) {
+
+    event.requestContext.http.path = path.substring(4);
+
+    handler(event)
+      .then((resp) => {
         // Lambda allows bar JSON responses and looks for 'statusCode' to differentiate. We do the
         // same here.
         if (resp.statusCode === undefined) {
@@ -45,11 +47,13 @@ function handlerWrapper({ handler, event, res }) {
           res.setHeader("Set-Cookie", resp.cookies);
         }
         res.end(resp.body, "utf8");
-      }
-    })
-    .catch((err) => {
-      throw err;
-    });
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } else {
+    staticProxy({ event, res });
+  }
 }
 
 const server = http.createServer((req, res) => {

@@ -1,7 +1,7 @@
 "use strict";
 
 async function loadAccount() {
-  const response = await fetch("http://localhost:8080/account");
+  const response = await fetch(`${location.protocol}://${location.host}/app/account`);
   const body = await response.json();
   if (body.username !== undefined) {
     window.location.pathname = "/";
