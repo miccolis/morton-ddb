@@ -230,6 +230,48 @@
                 }
             }
         },
+        "LambdaCachePolicy": {
+            "Type" : "AWS::CloudFront::CachePolicy",
+            "Properties" : {
+                "CachePolicyConfig": {
+                    "DefaultTTL" : "0",
+                    "MaxTTL" : "10",
+                    "MinTTL" : "0",
+                    "Name": { "Fn::Sub": "${AWS::StackName}-Lambda-Origin"},
+                    "ParametersInCacheKeyAndForwardedToOrigin": {
+                        "EnableAcceptEncodingBrotli": true,
+                        "EnableAcceptEncodingGzip": true,
+                        "CookiesConfig" : {
+                            "CookieBehavior": "none"
+                        },
+                        "HeadersConfig" : {
+                            "HeaderBehavior": "none"
+                        },
+                        "QueryStringsConfig": {
+                            "QueryStringBehavior": "all"
+                        }
+                    }
+                }
+            }
+        },
+        "LambdaRequestPolicy": {
+            "Type" : "AWS::CloudFront::OriginRequestPolicy",
+            "Properties" : {
+                "OriginRequestPolicyConfig": {
+                    "Name": { "Fn::Sub": "${AWS::StackName}-Lambda-Origin"},
+                    "CookiesConfig": {
+                        "CookieBehavior": "whitelist",
+                        "Cookies": ["auth"]
+                    },
+                    "HeadersConfig": {
+                        "HeaderBehavior": "none"
+                    },
+                    "QueryStringsConfig": {
+                        "QueryStringBehavior": "all"
+                    }
+                }
+            }
+        },
         "CloudfrontDistro": {
             "Type": "AWS::CloudFront::Distribution",
             "Properties": {
@@ -276,17 +318,19 @@
                         "CachePolicyId":  { "Ref": "WebsiteCachePolicy" },
                         "OriginRequestPolicyId": { "Ref": "WebsiteRequestPolicy" }
                     },
+                    "DefaultRootObject": "index.html",
                     "CacheBehaviors": [
                         {
-                            "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
+                            "AllowedMethods": ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"],
                             "Compress": true,
                             "PathPattern": "/app/*",
                             "TargetOriginId": "LambdaBackend",
                             "ViewerProtocolPolicy": "redirect-to-https",
-                            "CachePolicyId":  { "Ref": "WebsiteCachePolicy" },
-                            "OriginRequestPolicyId": { "Ref": "WebsiteRequestPolicy" }
+                            "CachePolicyId":  { "Ref": "LambdaCachePolicy" },
+                            "OriginRequestPolicyId": { "Ref": "LambdaRequestPolicy" }
                         }
-                    ]
+                    ],
+                    "HttpVersion": "http2and3"
                 }
             }
         }
