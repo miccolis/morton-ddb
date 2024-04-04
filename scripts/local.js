@@ -21,10 +21,7 @@ function handlerWrapper({ handler, event, res }) {
 
   // Matches cloudformation setup which routes all requests that start with /app
   // to the lambda.
-  if (path.startsWith('/app')) {
-
-    event.requestContext.http.path = path.substring(4);
-
+  if (path.startsWith("/app")) {
     handler(event)
       .then((resp) => {
         // Lambda allows bar JSON responses and looks for 'statusCode' to differentiate. We do the

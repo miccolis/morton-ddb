@@ -73,9 +73,9 @@ function setupModals() {
 }
 
 async function loadDomains() {
-  const response = await fetch("http://localhost:8080/domains");
+  const response = await fetch("/app/domains");
   if (response.status == 403) {
-    window.location.pathname = "/login";
+    window.location.pathname = "/login.html";
   } else {
     const { domains } = await response.json();
 
@@ -83,7 +83,7 @@ async function loadDomains() {
       .map(
         (v) =>
           `<domain-card>
-      <span slot="title-link"><a href="/map?d=${v.domainId}">${v.name}</a></span>
+      <span slot="title-link"><a href="/map.html?d=${v.domainId}">${v.name}</a></span>
       <span slot="created">${v.created}</span>
       <span slot="version">${v.version}</span>
     </domain-card>`,

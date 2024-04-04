@@ -48,7 +48,7 @@ t.test("handler - get domain route", async (t) => {
 t.test("handler - domain lifecycle routes", async (t) => {
   const domainId = "handler-domain-lifecycle-routes";
   const resp = await handler(
-    asRequestContext("PUT", `/d/${domainId}`, {
+    asRequestContext("PUT", `/app/d/${domainId}`, {
       name: "Test Domain",
       zoom: 12,
     }),
@@ -63,7 +63,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
     zoom: 12,
   });
 
-  const resp2 = await handler(asRequestContext("GET", `/d/${domainId}`));
+  const resp2 = await handler(asRequestContext("GET", `/app/d/${domainId}`));
   t.same(JSON.parse(resp2.body), {
     domainId,
     name: "Test Domain",
@@ -73,7 +73,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
   });
 
   const resp3 = await handler(
-    asRequestContext("PATCH", `/d/${domainId}`, {
+    asRequestContext("PATCH", `/app/d/${domainId}`, {
       name: "Updated Domain",
       version: 1,
     }),
@@ -87,7 +87,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
   });
 
   const resp4 = await handler(
-    asRequestContext("PATCH", `/d/${domainId}`, {
+    asRequestContext("PATCH", `/app/d/${domainId}`, {
       name: "Updated Domain Again",
       version: 1,
     }),
@@ -98,16 +98,16 @@ t.test("handler - domain lifecycle routes", async (t) => {
 t.test("handler - listing routes", async (t) => {
   const domainId = "handler-listing-route";
   await handler(
-    asRequestContext("PUT", `/d/${domainId}`, {
+    asRequestContext("PUT", `/app/d/${domainId}`, {
       name: "Test Domain",
       zoom: 12,
     }),
   );
 
-  const resp1 = await handler(asRequestContext("GET", `/domains`));
+  const resp1 = await handler(asRequestContext("GET", `/app/domains`));
   t.equal(typeof JSON.parse(resp1.body).domains, "object");
 
-  const resp2 = await handler(asRequestContext("GET", `/d/${domainId}/items`));
+  const resp2 = await handler(asRequestContext("GET", `/app/d/${domainId}/items`));
   t.equal(
     resp2.body,
     JSON.stringify({
@@ -121,14 +121,14 @@ t.test("handler - listing routes", async (t) => {
 t.test("handler - item lifecycle routes", async (t) => {
   const domainId = "handler-item-lifecycle-routes";
   await handler(
-    asRequestContext("PUT", `/d/${domainId}`, {
+    asRequestContext("PUT", `/app/d/${domainId}`, {
       name: "Test Domain",
       zoom: 12,
     }),
   );
 
   const resp = await handler(
-    asRequestContext("DELETE", `/d/${domainId}/item/test-item`),
+    asRequestContext("DELETE", `/app/d/${domainId}/item/test-item`),
   );
   t.same(resp.statusCode, 404);
 
@@ -143,7 +143,7 @@ t.test("handler - item lifecycle routes", async (t) => {
     },
   };
   const resp2 = await handler(
-    asRequestContext("POST", `/d/${domainId}/item`, item),
+    asRequestContext("POST", `/app/d/${domainId}/item`, item),
   );
   const { itemId } = resp2;
   t.same(resp2, {
@@ -161,7 +161,7 @@ t.test("handler - item lifecycle routes", async (t) => {
   });
 
   const resp3 = await handler(
-    asRequestContext("GET", `/d/${domainId}/item/${itemId}`),
+    asRequestContext("GET", `/app/d/${domainId}/item/${itemId}`),
   );
   t.same(JSON.parse(resp3.body), {
     domainId,
@@ -178,7 +178,7 @@ t.test("handler - item lifecycle routes", async (t) => {
   });
 
   const resp4 = await handler(
-    asRequestContext("PATCH", `/d/${domainId}/item/${itemId}`, {
+    asRequestContext("PATCH", `/app/d/${domainId}/item/${itemId}`, {
       version: 1,
       properties: {
         name: "Skull island",
@@ -204,7 +204,7 @@ t.test("handler - item lifecycle routes", async (t) => {
   });
 
   const resp5 = await handler(
-    asRequestContext("DELETE", `/d/${domainId}/item/${itemId}`),
+    asRequestContext("DELETE", `/app/d/${domainId}/item/${itemId}`),
   );
   t.same(resp5, {});
 });
@@ -212,7 +212,7 @@ t.test("handler - item lifecycle routes", async (t) => {
 t.test("handler - query route", async (t) => {
   const domainId = "handler-query-route";
   await handler(
-    asRequestContext("PUT", `/d/${domainId}`, {
+    asRequestContext("PUT", `/app/d/${domainId}`, {
       name: "Test Domain",
       zoom: 12,
     }),
@@ -222,7 +222,7 @@ t.test("handler - query route", async (t) => {
     requestContext: {
       http: {
         method: "GET",
-        path: `/d/${domainId}/query`,
+        path: `/app/d/${domainId}/query`,
       },
     },
     queryStringParameters: {
@@ -239,7 +239,7 @@ t.test("handler - query route", async (t) => {
 
 t.test("handles - account lifecycle routes", async (t) => {
   const resp1 = await handler(
-    asRequestContext("POST", `/account`, {
+    asRequestContext("POST", `/app/account`, {
       username: "test-created",
       email: "test-created@example.com",
       password: "abadpassword",
@@ -251,7 +251,7 @@ t.test("handles - account lifecycle routes", async (t) => {
     requestContext: {
       http: {
         method: "POST",
-        path: "/authorize",
+        path: "/app/authorize",
       },
     },
     body: "username=test-created&password=abadpassword",
@@ -267,7 +267,7 @@ t.test("handles - account lifecycle routes", async (t) => {
   const resp3 = await handler(
     asRequestContext(
       "PATCH",
-      `/account/${resp1.username}`,
+      `/app/account/${resp1.username}`,
       {
         password: "asillypassword",
         version: resp1.version,
@@ -282,7 +282,7 @@ t.test("handles - account lifecycle routes", async (t) => {
     requestContext: {
       http: {
         method: "POST",
-        path: "/authorize",
+        path: "/app/authorize",
       },
     },
     body: "username=test-created&password=asillypassword",

@@ -48,10 +48,11 @@ aws cloudformation deploy --template-file ./cloudformation/template.json --stack
 export STACK_NAME=morton-test
 export FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`LambdaHandlerArn`].OutputValue' --output text)
 
+npm run bundle
 cd dist && zip bundle.zip index.js
+cd ..
 aws lambda update-function-code --function-name $FUNCTION_ARN --zip-file fileb://dist/bundle.zip
 ```
-
 
 ```
 export STACK_NAME=morton-test

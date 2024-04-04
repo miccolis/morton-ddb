@@ -31,21 +31,21 @@ import { logoutHandler } from "./handlers/logoutHandler.js";
 
 /** @type {Array<[PathHandler, HttpMethod, string]>} */
 const pathHandlers = [
-  [itemQueryHandler, "GET", "/d/:domain/query"],
-  [itemCreateHandler, "POST", "/d/:domain/item"],
-  [itemGetHandler, "GET", "/d/:domain/item/:item"],
-  [itemUpdateHandler, "PATCH", "/d/:domain/item/:item"],
-  [itemDeleteHandler, "DELETE", "/d/:domain/item/:item"],
-  [itemListHandler, "GET", "/d/:domain/items"],
-  [domainListHandler, "GET", "/domains"],
-  [domainGetHandler, "GET", "/d/:domain"],
-  [domainCreateHandler, "PUT", "/d/:domain"],
-  [domainUpdateHandler, "PATCH", "/d/:domain"],
-  [accountCreateHandler, "POST", "/account"],
-  [accountGetHandler, "GET", "/account"],
-  [accountUpdateHandler, "PATCH", "/account/:account"],
-  [authorizeHandler, "POST", "/authorize"],
-  [logoutHandler, "GET", "/logout"],
+  [itemQueryHandler, "GET", "/app/d/:domain/query"],
+  [itemCreateHandler, "POST", "/app/d/:domain/item"],
+  [itemGetHandler, "GET", "/app/d/:domain/item/:item"],
+  [itemUpdateHandler, "PATCH", "/app/d/:domain/item/:item"],
+  [itemDeleteHandler, "DELETE", "/app/d/:domain/item/:item"],
+  [itemListHandler, "GET", "/app/d/:domain/items"],
+  [domainListHandler, "GET", "/app/domains"],
+  [domainGetHandler, "GET", "/app/d/:domain"],
+  [domainCreateHandler, "PUT", "/app/d/:domain"],
+  [domainUpdateHandler, "PATCH", "/app/d/:domain"],
+  [accountCreateHandler, "POST", "/app/account"],
+  [accountGetHandler, "GET", "/app/account"],
+  [accountUpdateHandler, "PATCH", "/app/account/:account"],
+  [authorizeHandler, "POST", "/app/authorize"],
+  [logoutHandler, "GET", "/app/logout"],
 ];
 
 /**
