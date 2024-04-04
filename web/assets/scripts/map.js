@@ -18,7 +18,7 @@ function setupMap() {
 
   const params = new URLSearchParams(window.location.search);
   const dataSet = params.get("d");
-  const baseUrl = `${location.protocol}://${location.host}/app/d/${dataSet}`;
+  const baseUrl = `/app/d/${dataSet}`;
 
   const addFeatures = async () => {
     const queryUrl = `${baseUrl}/items`;

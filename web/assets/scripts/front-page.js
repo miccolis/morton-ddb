@@ -74,9 +74,7 @@ function setupModals() {
 
 async function loadDomains() {
   const response = await fetch("/app/domains");
-  if (response.status == 403) {
-    window.location.pathname = "/login.html";
-  } else {
+  if (response.status == 200) {
     const { domains } = await response.json();
 
     document.getElementById("target").innerHTML = domains
@@ -89,6 +87,8 @@ async function loadDomains() {
     </domain-card>`,
       )
       .join("");
+  } else {
+    // do something with the error
   }
 }
 
@@ -139,9 +139,24 @@ function setupCreateDomain() {
   });
 }
 
+async function loadAccount() {
+  const response = await fetch('/app/account');
+  if (response.status !== 200) {
+    return false;
+  } else {
+    return response.json();
+  }
+}
+
 window.addEventListener("DOMContentLoaded", (/* event */) => {
   setupCustomElements();
   setupModals();
   setupCreateDomain();
   loadDomains();
+  loadAccount().then(
+    () =>{
+      document.querySelectorAll('.auth-required.hidden').forEach(el => {
+        el.classList.remove('hidden');
+      });
+    }, () => {});
 });

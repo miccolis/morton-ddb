@@ -4,8 +4,13 @@ layout: default
 localScripts:
   - front-page.js
 ---
+<style>
+  .hidden { display: none; }
+</style>
 
-<span class="js-modal-trigger" data-target="domain-create-modal">Add</span>
+<div class="auth-required hidden">
+  <span class="js-modal-trigger" data-target="domain-create-modal">Add</span>
+</div>
 
 <div class="fixed-grid">
   <div id='target' class="grid">

@@ -107,7 +107,9 @@ t.test("handler - listing routes", async (t) => {
   const resp1 = await handler(asRequestContext("GET", `/app/domains`));
   t.equal(typeof JSON.parse(resp1.body).domains, "object");
 
-  const resp2 = await handler(asRequestContext("GET", `/app/d/${domainId}/items`));
+  const resp2 = await handler(
+    asRequestContext("GET", `/app/d/${domainId}/items`),
+  );
   t.equal(
     resp2.body,
     JSON.stringify({
