@@ -6,7 +6,7 @@ const { compare } = bcrypt;
 /**
  * @param {import('../types').PathHandlerOptions} options
  */
-export const authorizeHandler = async ({ event, ddbClient, config }) => {
+export const loginHandler = async ({ event, ddbClient, config }) => {
   if (
     !event.headers["content-type"]?.startsWith(
       "application/x-www-form-urlencoded",

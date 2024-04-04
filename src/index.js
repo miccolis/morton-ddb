@@ -8,7 +8,6 @@ import { loadConfig } from "./lib/config.js";
 import { accountCreateHandler } from "./handlers/accountCreateHandler.js";
 import { accountGetHandler } from "./handlers/accountGetHandler.js";
 import { accountUpdateHandler } from "./handlers/accountUpdateHandler.js";
-import { authorizeHandler } from "./handlers/authorizeHandler.js";
 import { domainCreateHandler } from "./handlers/domainCreateHandler.js";
 import { domainGetHandler } from "./handlers/domainGetHandler.js";
 import { domainListHandler } from "./handlers/domainListHandler.js";
@@ -19,6 +18,7 @@ import { itemGetHandler } from "./handlers/itemGetHandler.js";
 import { itemListHandler } from "./handlers/itemListHandler.js";
 import { itemUpdateHandler } from "./handlers/itemUpdateHandler.js";
 import { itemQueryHandler } from "./handlers/itemQueryHandler.js";
+import { loginHandler } from "./handlers/loginHandler.js";
 import { logoutHandler } from "./handlers/logoutHandler.js";
 
 /**
@@ -44,7 +44,7 @@ const pathHandlers = [
   [accountCreateHandler, "POST", "/app/account"],
   [accountGetHandler, "GET", "/app/account"],
   [accountUpdateHandler, "PATCH", "/app/account/:account"],
-  [authorizeHandler, "POST", "/app/authorize"],
+  [loginHandler, "POST", "/app/login"],
   [logoutHandler, "GET", "/app/logout"],
 ];
 

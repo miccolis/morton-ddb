@@ -24,7 +24,7 @@ GET    /account - Get info about logged in user.
 POST   /account - Create an account
 PATCH  /account/<account-id> - Update an account
 
-POST   /authorize - Should probably change this to /login
+POST   /login
 GET    /logout
 ```
 

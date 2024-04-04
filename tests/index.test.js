@@ -251,7 +251,7 @@ t.test("handles - account lifecycle routes", async (t) => {
     requestContext: {
       http: {
         method: "POST",
-        path: "/app/authorize",
+        path: "/app/login",
       },
     },
     body: "username=test-created&password=abadpassword",
@@ -277,12 +277,12 @@ t.test("handles - account lifecycle routes", async (t) => {
   );
   t.same(resp3.version, 2);
 
-  // authorize as a test-created user using the new password
+  // login as a test-created user using the new password
   const resp4 = await handler({
     requestContext: {
       http: {
         method: "POST",
-        path: "/app/authorize",
+        path: "/app/login",
       },
     },
     body: "username=test-created&password=asillypassword",

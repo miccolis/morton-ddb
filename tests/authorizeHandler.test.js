@@ -5,16 +5,16 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { loadConfig } from "../src/lib/config.js";
 import { generateJWT } from "../src/lib/helpers.js";
 
-import { authorizeHandler } from "../src/handlers/authorizeHandler.js";
+import { loginHandler } from "../src/handlers/loginHandler.js";
 import { accountCreateHandler } from "../src/handlers/accountCreateHandler.js";
 
-t.test("authorizeHandler - bad content type", async (t) => {
+t.test("loginHandler - bad content type", async (t) => {
   const { dynamodbClientConfig, dynamodbTableName } = loadConfig(true);
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );
   try {
-    await authorizeHandler({
+    await loginHandler({
       event: { headers: { "content-type": "application/json" } },
       ddbClient,
       config: { dynamodbTableName },
@@ -25,13 +25,13 @@ t.test("authorizeHandler - bad content type", async (t) => {
   t.end();
 });
 
-t.test("authorizeHandler - missing creds", async (t) => {
+t.test("loginHandler - missing creds", async (t) => {
   const { dynamodbClientConfig, dynamodbTableName } = loadConfig(true);
   const ddbClient = DynamoDBDocumentClient.from(
     new DynamoDBClient(dynamodbClientConfig),
   );
   try {
-    await authorizeHandler({
+    await loginHandler({
       event: {
         headers: { "content-type": "application/x-www-form-urlencoded" },
       },
@@ -44,7 +44,7 @@ t.test("authorizeHandler - missing creds", async (t) => {
   t.end();
 });
 
-t.test("authorizeHandler - verify password", async (t) => {
+t.test("loginHandler - verify password", async (t) => {
   const config = loadConfig(true);
   const { dynamodbClientConfig, jwtSecret } = config;
   const ddbClient = DynamoDBDocumentClient.from(
@@ -72,7 +72,7 @@ t.test("authorizeHandler - verify password", async (t) => {
   });
 
   try {
-    await authorizeHandler({
+    await loginHandler({
       event: {
         headers: { "content-type": "application/x-www-form-urlencoded" },
         body: "username=test&password=badpass",
@@ -84,7 +84,7 @@ t.test("authorizeHandler - verify password", async (t) => {
     t.equal(e.statusCode, 401);
   }
 
-  const resp = await authorizeHandler({
+  const resp = await loginHandler({
     event: {
       headers: { "content-type": "application/x-www-form-urlencoded" },
       body: "username=test&password=test",
