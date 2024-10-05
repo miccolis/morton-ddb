@@ -22,6 +22,7 @@ export const domainCreateHandler = async ({
   validateDomain({ name, zoom, access, ttl });
 
   const owners = [username];
+  const created = new Date().toISOString();
 
   /** @type {import('../types').StoredDomain} */
   const item = {
@@ -30,7 +31,7 @@ export const domainCreateHandler = async ({
     model: "domain",
     domainId,
     name,
-    created: new Date().toISOString(),
+    created,
     zoom,
     owners,
     version: 1,
@@ -62,10 +63,11 @@ export const domainCreateHandler = async ({
   return {
     domainId,
     name,
+    created,
     zoom,
     owners,
-    version: 1,
     access,
+    version: 1,
     ttl,
   };
 };

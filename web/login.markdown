@@ -7,7 +7,7 @@ localScripts:
 
 <div class="modal is-active">
   <div class="modal-background"></div>
-  <div class="modal-content">
+  <div class="modal-content box">
     <p>Please enter your credentials</p>
     <form action="/app/login" method="post">
       <div class="mb-2">

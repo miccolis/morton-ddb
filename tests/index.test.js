@@ -47,7 +47,7 @@ t.test("handler - get domain route", async (t) => {
 
 t.test("handler - domain lifecycle routes", async (t) => {
   const domainId = "handler-domain-lifecycle-routes";
-  const resp = await handler(
+  const { created, ...resp } = await handler(
     asRequestContext("PUT", `/app/d/${domainId}`, {
       name: "Test Domain",
       zoom: 12,
@@ -62,6 +62,7 @@ t.test("handler - domain lifecycle routes", async (t) => {
     ttl: 0,
     zoom: 12,
   });
+  t.ok(new Date(created) != "Invalid Date");
 
   const resp2 = await handler(asRequestContext("GET", `/app/d/${domainId}`));
   t.same(JSON.parse(resp2.body), {

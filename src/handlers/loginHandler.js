@@ -56,7 +56,7 @@ export const loginHandler = async ({ event, ddbClient, config }) => {
     },
     cookies: [
       // `auth=${jwt}; Max-Age=${maxage}; SameSite=Strict; Path=/; Secure; HttpOnly`,
-      `auth=${jwt}; Max-Age=${maxage}; SameSite=Strict; Path=/; HttpOnly`,
+      `auth=${jwt}; Max-Age=${maxage}; SameSite=Strict; Path=/app/; HttpOnly`,
     ],
   };
 };

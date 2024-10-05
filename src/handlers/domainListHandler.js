@@ -42,11 +42,17 @@ export const domainListHandler = async ({ event, ddbClient, config }) => {
   const { Items: domains } = await ddbClient.send(new QueryCommand(queryInput));
 
   return {
-    domains: domains.map(({ domainId, name, created, version }) => ({
-      domainId,
-      name,
-      created,
-      version,
-    })),
+    domains: domains.map(
+      ({ domainId, name, created, zoom, owners, ttl, access, version }) => ({
+        domainId,
+        name,
+        created,
+        zoom,
+        owners,
+        access,
+        version,
+        ttl,
+      }),
+    ),
   };
 };
