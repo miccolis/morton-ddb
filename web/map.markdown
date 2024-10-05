@@ -21,6 +21,7 @@ localScripts:
     top: 0;
     bottom: 0;
     width: 100%;
+    height: 500px;
   }
   .mapboxgl-popup {
     max-width: 400px;
