@@ -24,8 +24,15 @@ function setupCustomElements() {
   customElements.define(
     "domain-edit-content",
     class extends HTMLElement {
+      $domainId;
+      $version;
+      $name;
+      $access;
+      $ttl;
+
       constructor() {
         super();
+
         /** @type {HTMLTemplateElement} */
         let template =
           /** @type {undefined } */
@@ -35,6 +42,63 @@ function setupCustomElements() {
 
         const shadowRoot = this.attachShadow({ mode: "open" });
         shadowRoot.appendChild(templateContent.cloneNode(true));
+
+        this.$domainId = this.shadowRoot.querySelector('input[name=domainId]');
+        this.$version= this.shadowRoot.querySelector('input[name=version]');
+        this.$name = this.shadowRoot.querySelector('input[name=name]');
+        this.$access = this.shadowRoot.querySelector('select[name=access]');
+        this.$ttl = this.shadowRoot.querySelector('input[name=ttl]');
+      }
+
+      connectedCallback() {
+        this.$domainId.value = this.dataset.domainId;
+        this.$version.value = this.dataset.version;
+        this.$name.value = this.dataset.name;
+        this.$access.value = this.dataset.access;
+        this.$ttl.value = this.dataset.ttl;
+
+        this.shadowRoot
+          .querySelector('.js-domain-edit-form-submit')
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const formEl = e.originalTarget.closest("form");
+            const data = new FormData(formEl);
+
+            let attributes = {};
+            for (const [k, v] of data) {
+              if (
+                // Two elements are expected to be integers
+                (k === "version" || k === "ttl") &&
+                typeof v === "string" // Makes typechecking happy.
+              ) {
+                attributes[k] = parseInt(v);
+              } else {
+                attributes[k] = v;
+              }
+            }
+
+            const { domainId, ...body } = attributes;
+
+            // TODO disable form
+            // show loading indicator
+
+            fetch(`/app/d/${domainId}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            })
+              .then((resp) => {
+                if (resp.ok && resp.status === 200) {
+                  location.reload();
+                }
+                // Validation errors will show like resp.ok = false, resp.status = 400
+              })
+              .catch((err) => {
+                // TODO show unexpected error message
+                console.error(err);
+              });
+          });
       }
     },
   );
@@ -143,27 +207,41 @@ async function loadDomains() {
   if (response.status == 200) {
     const { domains } = await response.json();
 
-    document.getElementById("target").innerHTML = domains
-      .map(
-        (v) =>
-          `<domain-card>
-             <span slot="title-link"><a href="/map.html?d=${v.domainId}">${v.name}</a></span>
-             <span slot="created">${v.created}</span>
-             <span slot="version">${v.version}</span>
-             <span slot="ttl">${v.ttl}</span>
-             <span slot="access">${v.access}</span>
-             <span slot="zoom">${v.zoom}</span>
-           </domain-card>`,
-      )
-      .join("");
+    const target = document.getElementById("target");
+    target.innerHTML = ''; // get rid of the loader
+
+    domains.forEach((v) => {
+        const card = document.createElement('domain-card');
+        for (const k in v) {
+          card.dataset[k] = v[k];
+        }
+
+        card.innerHTML = `
+           <span slot="title-link"><a href="/map.html?d=${v.domainId}">${v.name}</a></span>
+           <span slot="created">${v.created}</span>
+           <span slot="version">${v.version}</span>
+           <span slot="ttl">${v.ttl}</span>
+           <span slot="access">${v.access}</span>
+           <span slot="zoom">${v.zoom}</span>
+         `;
+
+         target.appendChild(card);
+      });
 
     (document.querySelectorAll("domain-card") || []).forEach((el) => {
       el.addEventListener("click", (event) => {
-        if (event.originalTarget.dataset?.target === "domain-edit-modal")
-          document.querySelector(
-            "#domain-edit-modal .modal-content",
-          ).innerHTML = `<domain-edit-content>
-            </domain-edit-content>`;
+        // Do not interfere with links
+        if (event.originalTarget.href) return;
+
+        const editForm = document.createElement('domain-edit-content');
+        for (const k in el.dataset) {
+          editForm.dataset[k] = el.dataset[k];
+        }
+        const modal = document.querySelector(
+          "#domain-edit-modal .modal-content",
+        );
+        modal.innerHTML = '';
+        modal.appendChild(editForm);
         document.getElementById("domain-edit-modal").classList.add("is-active");
       });
     });

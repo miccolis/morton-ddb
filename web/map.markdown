@@ -1,5 +1,5 @@
 ---
-title: map
+title: Map
 layout: default
 remoteScripts:
   - https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js
@@ -32,5 +32,9 @@ localScripts:
       sans-serif;
   }
 </style>
+
+<div class="has-text-right" style="position: absolute; top: -45px; right: 0px">
+  <a href="/">Back to list</a>
+</div>
 
 <div id="map"></div>

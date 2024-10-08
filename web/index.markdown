@@ -35,7 +35,7 @@ localScripts:
 <div id="domain-create-modal" class="modal">
   <div class="modal-background"></div>
   <div class="modal-content box">
-    <p>fill out the form</p>
+    <p>Fill out the form</p>
     <form id="create-domain-form">
       <div class="mb-2">
         <label for="domainId">Domain ID</label>
@@ -61,9 +61,11 @@ localScripts:
         <input class="input" type="number" name="ttl" placeholder="0" />
       </div>
       <div>
-        <button id="create-domain-form-submit" class="button js-domain-create-form-submit" name="submit">
-          Create
-        </button>
+        <button
+          id="create-domain-form-submit"
+          class="button js-domain-create-form-submit"
+          name="submit"
+        >Create</button>
       </div>
     </form>
   </div>
@@ -103,12 +105,11 @@ localScripts:
 <template id="domain-edit-content">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
   <form id="create-edit-form">
-    <div class="mb-2">
-      <p>DomainId <slot name="domainId"></slot></p>
-    </div>
+    <input class="input" type="hidden" name="domainId" />
+    <input class="input" type="hidden" name="version" />
     <div class="mb-2">
       <label for="name">Name</label>
-      <input class="input" type="text" name="name" placeholder="Name"/>
+      <input class="input" type="text" name="name" />
     </div>
     <div class="mb-2">
       <label for="access">Access</label>
@@ -118,17 +119,13 @@ localScripts:
       </select>
     </div>
     <div class="mb-2">
-      <label for="zoom">Zoom</label>
-      <p>Zoom <slot name="zoom"></slot></p>
-    </div>
-    <div class="mb-2">
       <label for="ttl">TTL</label>
-      <input class="input" type="number" name="ttl" placeholder="0" />
+      <input class="input" type="number" name="ttl" />
     </div>
     <div>
       <button
-        id="create-domain-form-submit"
-        class="button js-domain-form-submit"
+        id="edit-domain-form-submit"
+        class="button js-domain-edit-form-submit"
         name="submit"
       >Update</button>
     </div>
