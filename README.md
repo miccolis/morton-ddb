@@ -53,7 +53,6 @@ The Lambda hosted API expects the following configuration.
 | DYNAMODB_TABLE_NAME  | DynamoDB table name                                               | `my-table`              |
 | DYNAMODB_ENDPOINT    | Overrides the default DynamoDB endpoint, useful for local testing | `http://localhost:8000` |
 | JWT_SECRET           | Hex encoded HS256 secret.                                         |                         |
-| APP_URI              | Base URI for the web application                                  | `http://localhost:8080` |
 
 The Jekyll-built web front end also has config.
 
@@ -64,26 +63,63 @@ The Jekyll-built web front end also has config.
 ## Deployment
 
 ### Initialization
-For initial setup use the aws cli to provision the resources
+
+#### AWS Hosted API
+
+For initial setup use the aws cli to provision the resources. Before you do that
+an HS256 secret is needed to generate the JSON Web Tokens (JWTs) that are used
+for authorization.
+
+```
+# Run in a node.js REPL
+const { generateSecret } = (await import("jose")).
+(await generateSecret("HS256")).export().toString("hex");
+```
+
+```
+# Back in a shell
+export STACK_NAME=morton-test
+
+aws cloudformation deploy --template-file ./cloudformation/template.json \
+--stack-name $STACK_NAME --no-execute-changeset --capabilities CAPABILITY_IAM \
+--parameter-overrides JWTSecret=[HS256-STRING]
+
+make code-update
+```
+
+#### AWS Hosted Web UI
+
+Add a Mapbox public token to `./web/_config.yml`. Adding a line to the end of
+the file like this;
+```
+mapboxAccessToken: "pk.but-like-my-actual.token-value"
+```
+
+With that in place, get the code up on S3
 
 ```
 export STACK_NAME=morton-test
-aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name $STACK_NAME --no-execute-changeset --capabilities CAPABILITY_IAM --parameter-overrides JWTSecret=...
-
-make code-update
 make web-update
 ```
 
+#### First user account
+
+To create the first user account you'll need to manually create the record in
+DynamoDB. First create the password hash.
+
 ```
+# In a node.js REPL
 > const { default: bcryptjs } = await import("bcryptjs")
-> await bcryptjs.hash('my-password', await bcryptjs.genSalt(10))
+> await bcryptjs.hash('[MY-PASSWORD-HERE]', await bcryptjs.genSalt(10))
 ```
 
+Then use the hash in a record like this, which can be added to DynamoDB in the
+web console.
 ```
 {
  "partition": "_accounts",
  "sort": "admin",
- "passwordHash": "PASSWORD HASH",
+ "passwordHash": "[PASSWORD HASH]",
  "username": "admin",
  "version": 1
 }
