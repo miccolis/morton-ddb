@@ -300,13 +300,6 @@ window.addEventListener("DOMContentLoaded", (/* event */) => {
         document.querySelectorAll(".auth-hidden.is-hidden").forEach((el) => {
           el.classList.remove("is-hidden");
         });
-        document
-          .querySelector(".js-logout")
-          .addEventListener("click", async (e) => {
-            e.preventDefault();
-            await fetch("/app/logout");
-            window.location.reload();
-          });
       } else {
         const { username } = account;
         // bind username into to a well known location
@@ -318,6 +311,14 @@ window.addEventListener("DOMContentLoaded", (/* event */) => {
         document.querySelectorAll(".auth-required.is-hidden").forEach((el) => {
           el.classList.remove("is-hidden");
         });
+
+        document
+          .querySelector(".js-logout")
+          .addEventListener("click", async (e) => {
+            e.preventDefault();
+            await fetch("/app/logout");
+            window.location.reload();
+          });
 
         // Dispatch event that others can listen for
         elem.dispatchEvent(new CustomEvent("auth", { detail: { username } }));
