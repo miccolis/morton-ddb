@@ -105,10 +105,10 @@
                     "ZipFile": "module.exports = { handler: function() { return 'hello world'; } }"
                 },
                 "Runtime": "nodejs20.x",
+                "MemorySize": "512",
                 "Environment": {
                     "Variables": {
                         "DYNAMODB_TABLE_NAME": { "Ref": "DynamoDBTable" },
-                        "APP_URI": "",
                         "JWT_SECRET": { "Ref": "JWTSecret" }
                     }
                 }
@@ -165,11 +165,14 @@
                                     "Resource": "*"
                                 },
                                 {
-                                    "Sid": "DynamoReadAccess",
+                                    "Sid": "DynamoAccess",
                                     "Effect": "Allow",
                                     "Action": [
                                         "dynamodb:BatchGetItem",
                                         "dynamodb:GetItem",
+                                        "dynamodb:PutItem",
+                                        "dynamodb:BatchWriteItem",
+                                        "dynamodb:UpdateItem",
                                         "dynamodb:Query"
                                     ],
                                     "Resource": {

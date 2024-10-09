@@ -7,8 +7,8 @@ function setupMap() {
     window.mapboxgl
   );
 
-  mapboxgl.accessToken =
-    "pk.eyJ1IjoibWljY29saXMiLCJhIjoiY2w2ZHlmODQ5MGZtdTNlcHN1eHVyZHo4dyJ9.c7_lC5E1dnQZnsb22QaKnA";
+  mapboxgl.accessToken = window.mapboxAccessToken;
+
   const map = new mapboxgl.Map({
     container: "map",
     style: "mapbox://styles/mapbox/standard",

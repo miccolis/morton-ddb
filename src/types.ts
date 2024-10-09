@@ -8,7 +8,6 @@ export type Config = {
     endpoint: string;
   };
   jwtSecret: Uint8Array;
-  appURI: string;
 };
 
 export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";

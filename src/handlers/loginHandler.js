@@ -15,12 +15,15 @@ export const loginHandler = async ({ event, ddbClient, config }) => {
     throw new HttpError(415);
   }
 
-  const payload = new URLSearchParams(event.body);
+  const payload = new URLSearchParams(event.isBase64Encoded
+    ? Buffer.from(event.body, 'base64').toString('utf8')
+    : event.body);
+
   const username = payload.get("username");
   const password = payload.get("password");
 
   if (!username || !password) {
-    throw new HttpError(400);
+    throw new HttpError(400, 'username and password are required');
   }
 
   const account = await getAccount({
@@ -52,10 +55,9 @@ export const loginHandler = async ({ event, ddbClient, config }) => {
     statusCode: 303,
     headers: {
       "content-type": "application/json",
-      location: config.appURI,
+      location: event.headers.origin ?? `http://${event.headers.host}`
     },
     cookies: [
-      // `auth=${jwt}; Max-Age=${maxage}; SameSite=Strict; Path=/; Secure; HttpOnly`,
       `auth=${jwt}; Max-Age=${maxage}; SameSite=Strict; Path=/app/; HttpOnly`,
     ],
   };

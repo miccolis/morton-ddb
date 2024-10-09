@@ -28,7 +28,25 @@ POST   /login
 GET    /logout
 ```
 
+## Web Interface
+
+A basic web interface exists for managing domains & viewing data.
+
+## Uploading Data
+
+The API expects GeoJSON so you can use curl as follows
+
+```
+# Login and store the cookie locally
+curl -c 🍪.txt  --data "username=<username>" --data "password="<password>" http://www.example.com/app/login
+
+# Upload that data
+curl -b 🍪.txt  --json @my-data http://www.example.com/app/d/<domain-id>/item
+```
+
 ## Configuration
+
+The Lambda hosted API expects the following configuration.
 
 | Environment variable | Description                                                       | Example                 |
 | -------------------- | ----------------------------------------------------------------- | ----------------------- |
@@ -37,42 +55,61 @@ GET    /logout
 | JWT_SECRET           | Hex encoded HS256 secret.                                         |                         |
 | APP_URI              | Base URI for the web application                                  | `http://localhost:8080` |
 
+The Jekyll-built web front end also has config.
+
+| Environment variable | Description                                                       | Example                 |
+| -------------------- | ----------------------------------------------------------------- | ----------------------- |
+| MAPBOX_ACCESS_TOKEN  | Public access token for Mapbox                                    |                         |
+
 ## Deployment
 
-```
-export STACK_NAME=morton-test
-aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name $STACK_NAME --no-execute-changeset --capabilities CAPABILITY_IAM
-
-# Note: on first deploy you'll need to `--parameter-overrides JWTSecret=...`
-
-export STACK_NAME=morton-test
-export FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`LambdaHandlerArn`].OutputValue' --output text)
-
-npm run bundle
-cd dist && zip bundle.zip index.js
-cd ..
-aws lambda update-function-code --function-name $FUNCTION_ARN --zip-file fileb://dist/bundle.zip
-```
+### Initialization
+For initial setup use the aws cli to provision the resources
 
 ```
 export STACK_NAME=morton-test
-export WEBSITE_BUCKET=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[?OutputKey==`WebsiteBucket`].OutputValue' --output text)
+aws cloudformation deploy --template-file ./cloudformation/template.json --stack-name $STACK_NAME --no-execute-changeset --capabilities CAPABILITY_IAM --parameter-overrides JWTSecret=...
 
-bundler exec jekyll build
-aws s3 sync ./web/_site/ s3://${WEBSITE_BUCKET}/ --delete
+make code-update
+make web-update
+```
 
+```
+> const { default: bcryptjs } = await import("bcryptjs")
+> await bcryptjs.hash('my-password', await bcryptjs.genSalt(10))
+```
+
+```
+{
+ "partition": "_accounts",
+ "sort": "admin",
+ "passwordHash": "PASSWORD HASH",
+ "username": "admin",
+ "version": 1
+}
+```
+
+### Updates
+
+Once that is setup you can use the Makefile for other updates
+
+```
+export STACK_NAME=morton-test
+make stack-update
+make code-update
+make web-update
 ```
 
 ## Database Index Design
 
 | Partition           | Sort          | IndexedDomain     | Morton    |
 | ------------------- | ------------- | ----------------- | --------- |
-| <domainId>          | item:<itemid> | n/a               | n/a       |
-| <domainId>:<itemId> | <morton>      | <domainId>:<zoom> | <integer> |
-| \_accounts          | <accountId>   | n/a               | n/a       |
-| \_domains           | <domainId>    | n/a               | n/a       |
+| [domainId]          | item:[itemid] | n/a               | n/a       |
+| [domainId]:[itemId] | [morton]      | [domainId]:[zoom] | [integer] |
+| \_accounts          | [accountId]   | n/a               | n/a       |
+| \_domains           | [domainId]    | n/a               | n/a       |
 
-Indexed domain is a secondary partition with a Mortan as a numeric sort key.
+Indexed domain is a secondary partition with a Morton as a numeric sort key.
 TODO These should have more generic names.
 
 Related reading

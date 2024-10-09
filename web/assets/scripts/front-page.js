@@ -228,27 +228,28 @@ async function loadDomains() {
          target.appendChild(card);
       });
 
-    (document.querySelectorAll("domain-card") || []).forEach((el) => {
-      el.addEventListener("click", (event) => {
-        // Do not interfere with links
-        if (event.originalTarget.href) return;
-
-        const editForm = document.createElement('domain-edit-content');
-        for (const k in el.dataset) {
-          editForm.dataset[k] = el.dataset[k];
-        }
-        const modal = document.querySelector(
-          "#domain-edit-modal .modal-content",
-        );
-        modal.innerHTML = '';
-        modal.appendChild(editForm);
-        document.getElementById("domain-edit-modal").classList.add("is-active");
-      });
-    });
 
     const showEditLinks = (username) => {
-      username;
-      // TODO how to get into the right card?
+      (document.querySelectorAll("domain-card") || []).forEach((el) => {
+        el.addEventListener("click", (event) => {
+          // Do not interfere with links
+          if (event.originalTarget.href) return;
+
+          // Only show edit form to owners
+          if (!el.dataset.owners.split(',').includes(username)) return;
+
+          const editForm = document.createElement('domain-edit-content');
+          for (const k in el.dataset) {
+            editForm.dataset[k] = el.dataset[k];
+          }
+          const modal = document.querySelector(
+            "#domain-edit-modal .modal-content",
+          );
+          modal.innerHTML = '';
+          modal.appendChild(editForm);
+          document.getElementById("domain-edit-modal").classList.add("is-active");
+        });
+      });
     };
 
     /** @ts-ignore-next-line thinks Element doesn't have dataset */
@@ -291,6 +292,11 @@ window.addEventListener("DOMContentLoaded", (/* event */) => {
       if (!account) {
         document.querySelectorAll(".auth-hidden.is-hidden").forEach((el) => {
           el.classList.remove("is-hidden");
+        });
+        document.querySelector('.js-logout').addEventListener('click', async (e) => {
+          e.preventDefault();
+          await fetch("/app/logout");
+          window.reload();
         });
       } else {
         const { username } = account;

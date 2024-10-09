@@ -86,7 +86,10 @@ t.test("loginHandler - verify password", async (t) => {
 
   const resp = await loginHandler({
     event: {
-      headers: { "content-type": "application/x-www-form-urlencoded" },
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        "origin": "http://localhost:8080"
+      },
       body: "username=test&password=test",
     },
     ddbClient,

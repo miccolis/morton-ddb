@@ -11,6 +11,9 @@ localScripts:
   href="https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css"
   rel="stylesheet"
 />
+<script>
+  window.mapboxAccessToken = "{{ site.mapboxAccessToken }}";
+</script>
 <style>
   body {
     margin: 0;

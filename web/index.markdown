@@ -11,7 +11,7 @@ localScripts:
     <a class="button" href="/login.html">Login</a>
   </span>
   <span class="auth-required is-hidden">
-    <a class="button" href="/app/logout">Logout</a>
+    <a class="button js-logout" href="#">Logout</a>
   </span>
 </div>
 

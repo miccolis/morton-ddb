@@ -14,14 +14,12 @@ export const loadConfig = (isTestRun) => {
       jwtSecret: new TextEncoder().encode(
         "931aeead46d069f4598e7b18d9dc95db3636e05357f814bce363f61b022862ba",
       ),
-      appURI: "http://localhost:8080",
     };
   } else {
     const {
       DYNAMODB_TABLE_NAME: dynamodbTableName,
       DYNAMODB_ENDPOINT: dynamodbEndpoint,
       JWT_SECRET: jwtSecret,
-      APP_URI: appURI,
     } = process.env;
     return {
       dynamodbTableName,
@@ -31,7 +29,6 @@ export const loadConfig = (isTestRun) => {
           }
         : undefined,
       jwtSecret: new TextEncoder().encode(jwtSecret),
-      appURI,
     };
   }
 };
