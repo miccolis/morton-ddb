@@ -56,9 +56,9 @@ The Lambda hosted API expects the following configuration.
 
 The Jekyll-built web front end also has config.
 
-| Environment variable | Description                                                       | Example                 |
-| -------------------- | ----------------------------------------------------------------- | ----------------------- |
-| MAPBOX_ACCESS_TOKEN  | Public access token for Mapbox                                    |                         |
+| \_config.yml variable | Description                    | Example                             |
+| --------------------- | ------------------------------ | ----------------------------------- |
+| mapboxAccessToken     | Public access token for Mapbox | `pk.but-like-my-actual.token-value` |
 
 ## Deployment
 
@@ -91,6 +91,7 @@ make code-update
 
 Add a Mapbox public token to `./web/_config.yml`. Adding a line to the end of
 the file like this;
+
 ```
 mapboxAccessToken: "pk.but-like-my-actual.token-value"
 ```
@@ -115,6 +116,7 @@ DynamoDB. First create the password hash.
 
 Then use the hash in a record like this, which can be added to DynamoDB in the
 web console.
+
 ```
 {
  "partition": "_accounts",

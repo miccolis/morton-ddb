@@ -24,10 +24,15 @@ function setupCustomElements() {
   customElements.define(
     "domain-edit-content",
     class extends HTMLElement {
+      /** @type {HTMLInputElement} **/
       $domainId;
+      /** @type {HTMLInputElement} **/
       $version;
+      /** @type {HTMLInputElement} **/
       $name;
+      /** @type {HTMLInputElement} **/
       $access;
+      /** @type {HTMLInputElement} **/
       $ttl;
 
       constructor() {
@@ -43,11 +48,11 @@ function setupCustomElements() {
         const shadowRoot = this.attachShadow({ mode: "open" });
         shadowRoot.appendChild(templateContent.cloneNode(true));
 
-        this.$domainId = this.shadowRoot.querySelector('input[name=domainId]');
-        this.$version= this.shadowRoot.querySelector('input[name=version]');
-        this.$name = this.shadowRoot.querySelector('input[name=name]');
-        this.$access = this.shadowRoot.querySelector('select[name=access]');
-        this.$ttl = this.shadowRoot.querySelector('input[name=ttl]');
+        this.$domainId = this.shadowRoot.querySelector("input[name=domainId]");
+        this.$version = this.shadowRoot.querySelector("input[name=version]");
+        this.$name = this.shadowRoot.querySelector("input[name=name]");
+        this.$access = this.shadowRoot.querySelector("select[name=access]");
+        this.$ttl = this.shadowRoot.querySelector("input[name=ttl]");
       }
 
       connectedCallback() {
@@ -58,11 +63,12 @@ function setupCustomElements() {
         this.$ttl.value = this.dataset.ttl;
 
         this.shadowRoot
-          .querySelector('.js-domain-edit-form-submit')
+          .querySelector(".js-domain-edit-form-submit")
           .addEventListener("click", (e) => {
             e.preventDefault();
 
-            const formEl = e.originalTarget.closest("form");
+            // @ts-ignore-next-line
+            const formEl = e.target.closest("form");
             const data = new FormData(formEl);
 
             let attributes = {};
@@ -90,7 +96,7 @@ function setupCustomElements() {
             })
               .then((resp) => {
                 if (resp.ok && resp.status === 200) {
-                  location.reload();
+                  window.location.reload();
                 }
                 // Validation errors will show like resp.ok = false, resp.status = 400
               })
@@ -189,7 +195,7 @@ function setupCreateDomain() {
         })
           .then((resp) => {
             if (resp.ok && resp.status === 200) {
-              location.reload();
+              window.location.reload();
             }
             // Validation errors will show like resp.ok = false, resp.status = 400
           })
@@ -208,15 +214,15 @@ async function loadDomains() {
     const { domains } = await response.json();
 
     const target = document.getElementById("target");
-    target.innerHTML = ''; // get rid of the loader
+    target.innerHTML = ""; // get rid of the loader
 
     domains.forEach((v) => {
-        const card = document.createElement('domain-card');
-        for (const k in v) {
-          card.dataset[k] = v[k];
-        }
+      const card = document.createElement("domain-card");
+      for (const k in v) {
+        card.dataset[k] = v[k];
+      }
 
-        card.innerHTML = `
+      card.innerHTML = `
            <span slot="title-link"><a href="/map.html?d=${v.domainId}">${v.name}</a></span>
            <span slot="created">${v.created}</span>
            <span slot="version">${v.version}</span>
@@ -225,9 +231,8 @@ async function loadDomains() {
            <span slot="zoom">${v.zoom}</span>
          `;
 
-         target.appendChild(card);
-      });
-
+      target.appendChild(card);
+    });
 
     const showEditLinks = (username) => {
       (document.querySelectorAll("domain-card") || []).forEach((el) => {
@@ -236,18 +241,20 @@ async function loadDomains() {
           if (event.originalTarget.href) return;
 
           // Only show edit form to owners
-          if (!el.dataset.owners.split(',').includes(username)) return;
+          if (!el.dataset.owners.split(",").includes(username)) return;
 
-          const editForm = document.createElement('domain-edit-content');
+          const editForm = document.createElement("domain-edit-content");
           for (const k in el.dataset) {
             editForm.dataset[k] = el.dataset[k];
           }
           const modal = document.querySelector(
             "#domain-edit-modal .modal-content",
           );
-          modal.innerHTML = '';
+          modal.innerHTML = "";
           modal.appendChild(editForm);
-          document.getElementById("domain-edit-modal").classList.add("is-active");
+          document
+            .getElementById("domain-edit-modal")
+            .classList.add("is-active");
         });
       });
     };
@@ -293,11 +300,13 @@ window.addEventListener("DOMContentLoaded", (/* event */) => {
         document.querySelectorAll(".auth-hidden.is-hidden").forEach((el) => {
           el.classList.remove("is-hidden");
         });
-        document.querySelector('.js-logout').addEventListener('click', async (e) => {
-          e.preventDefault();
-          await fetch("/app/logout");
-          window.reload();
-        });
+        document
+          .querySelector(".js-logout")
+          .addEventListener("click", async (e) => {
+            e.preventDefault();
+            await fetch("/app/logout");
+            window.location.reload();
+          });
       } else {
         const { username } = account;
         // bind username into to a well known location

@@ -7,6 +7,7 @@ function setupMap() {
     window.mapboxgl
   );
 
+  // @ts-ignore-next-line
   mapboxgl.accessToken = window.mapboxAccessToken;
 
   const map = new mapboxgl.Map({
