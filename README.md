@@ -1,6 +1,15 @@
 ## Morton DDB
 
-Stores & serves geospatial data using AWS DynamoDB and AWS Lambda. This is a hobby project I'm using to revisit a few, mostly unrelated, ideas; z-order indexed data in DynamoDB, Lambda function URLs, a middleware-less & minimal dependency node.js server, Typescript type checking & vanilla Javascript, and web components too. I'm having to implement auth as well because the AWS options for Lambda URIs are limited.
+Stores & serves geospatial data using AWS DynamoDB and AWS Lambda. This is a
+hobby project I'm using to revisit a few, mostly unrelated, ideas; z-order
+indexed data in DynamoDB, Lambda function URLs, a middleware-less & minimal
+dependency node.js server, Typescript type checking & vanilla Javascript, and
+web components too.
+
+I'm having to implement authentication as well because the AWS options for
+Lambda URIs are limited. It should be noted that there are a few security
+shortcuts I've taken related to authentication to keep things simple which also
+mean this project shouldn't be used with sensitive data, or maybe at all.
 
 ## API
 

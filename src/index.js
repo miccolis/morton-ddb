@@ -87,7 +87,7 @@ const compiledPaths = pathHandlers.map(([handler, method, path]) => {
         (err) => addCORS(prepareErrorResp(err)),
       );
   }
-  // TODO setup OPTIONS for other endpoints
+  // TODO consider adding OPTIONS for other endpoints
   return [handler, method, match(path, { decode: decodeURIComponent })];
 });
 

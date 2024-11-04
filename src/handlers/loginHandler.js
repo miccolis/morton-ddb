@@ -4,6 +4,11 @@ import { HttpError, generateJWT } from "../lib/helpers.js";
 
 const { compare } = bcrypt;
 /**
+ * Allows login via a form. This is vulnerable to CSRF as it doesn't have a
+ * CSRF token. As implemented here the cookie based auth is vulnerable to XSS.
+ * Both login and auth need to be hardened or replaced. The design here is just
+ * to make curl scripting easy.
+ *
  * @param {import('../types').PathHandlerOptions} options
  */
 export const loginHandler = async ({ event, ddbClient, config }) => {
