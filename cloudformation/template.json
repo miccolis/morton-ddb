@@ -61,41 +61,6 @@
                 ]
             }
         },
-        "WebsiteBucket": {
-            "Type": "AWS::S3::Bucket",
-            "Properties": {
-                "BucketName": {
-                    "Fn::Sub": "${AWS::AccountId}-${AWS::StackName}-website"
-                }
-            }
-        },
-        "WebsiteBucketPolicy": {
-            "Type": "AWS::S3::BucketPolicy",
-            "Properties": {
-                "Bucket": { "Ref": "WebsiteBucket" },
-                "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": {
-                        "Sid": "AllowCloudFrontServicePrincipalReadOnly",
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": "cloudfront.amazonaws.com"
-                        },
-                        "Action": "s3:GetObject",
-                        "Resource": {
-                            "Fn::Sub": "arn:aws:s3:::${WebsiteBucket}/*"
-                        },
-                        "Condition": {
-                            "StringEquals": {
-                                "AWS:SourceArn": {
-                                    "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistro}"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "LambdaHandler": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -183,6 +148,41 @@
                         }
                     }
                 ]
+            }
+        },
+        "WebsiteBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Fn::Sub": "${AWS::AccountId}-${AWS::StackName}-website"
+                }
+            }
+        },
+        "WebsiteBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+                "Bucket": { "Ref": "WebsiteBucket" },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": {
+                        "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "cloudfront.amazonaws.com"
+                        },
+                        "Action": "s3:GetObject",
+                        "Resource": {
+                            "Fn::Sub": "arn:aws:s3:::${WebsiteBucket}/*"
+                        },
+                        "Condition": {
+                            "StringEquals": {
+                                "AWS:SourceArn": {
+                                    "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistro}"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "WebsiteCachePolicy": {
@@ -330,6 +330,9 @@
                         "CachePolicyId": { "Ref": "WebsiteCachePolicy" },
                         "OriginRequestPolicyId": {
                             "Ref": "WebsiteRequestPolicy"
+                        },
+                        "ResponseHeadersPolicyId": {
+                            "Ref": "S3ResponseHeadersPolicy"
                         }
                     },
                     "DefaultRootObject": "index.html",
@@ -355,6 +358,34 @@
                         }
                     ],
                     "HttpVersion": "http2and3"
+                }
+            }
+        },
+        "S3ResponseHeadersPolicy": {
+            "Type" : "AWS::CloudFront::ResponseHeadersPolicy",
+            "Properties" : {
+                "ResponseHeadersPolicyConfig" : {
+                    "Name" : {
+                        "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "s3-header-conf"]]
+                    },
+                    "Comment" : "Similar to SecurityHeadersPolicy - 67f7725c-6f97-4210-82d7-5512b31e9d03",
+                    "SecurityHeadersConfig": {
+                        "ContentSecurityPolicy": {
+                            "ContentSecurityPolicy": "frame-ancestors 'none'; form-action 'self'",
+                            "Override": false
+                        },
+                        "ContentTypeOptions" : {
+                            "Override": true
+                        },
+                        "ReferrerPolicy": {
+                          "Override" : false,
+                          "ReferrerPolicy" : "strict-origin-when-cross-origin"
+                        },
+                        "StrictTransportSecurity": {
+                            "AccessControlMaxAgeSec": 31536000,
+                            "Override": false
+                        }
+                    }
                 }
             }
         }
