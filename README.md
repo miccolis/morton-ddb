@@ -47,7 +47,7 @@ The API expects GeoJSON so you can use curl as follows
 
 ```
 # Login and store the cookie locally
-curl -c 🍪.txt  --data "username=<username>" --data "password="<password>" http://www.example.com/app/login
+curl -c 🍪.txt  --data "username=<username>" --data "password=<password>" http://www.example.com/app/login
 
 # Upload that data
 curl -b 🍪.txt  --json @my-data http://www.example.com/app/d/<domain-id>/item
