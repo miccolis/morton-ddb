@@ -35,6 +35,8 @@ export const domainCreateHandler = async ({
     zoom,
     owners,
     version: 1,
+    itemCount: 0,
+    indexSize: 0,
     access,
     ttl,
   };

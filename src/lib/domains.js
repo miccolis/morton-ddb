@@ -1,15 +1,17 @@
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { HttpError } from "./helpers.js";
 
 /**
  * @typedef {import('../types').Domain} Domain
  * @typedef {import('../types').Config} Config
+ * @typedef {import('../types').DynamoDBReturnValue} DynamoDBReturnValue
+ * @typedef {import('@aws-sdk/lib-dynamodb').DynamoDBDocumentClient} DynamoDBDocumentClient
  */
 
 /**
  * @param {object} options
  * @param {string} options.domainId
- * @param {any} options.ddbClient
+ * @param {DynamoDBDocumentClient} options.ddbClient
  * @param {Config} options.config
  * @return {Promise<Domain>}
  */
@@ -41,6 +43,44 @@ export const getDomain = async ({
   } else {
     return undefined;
   }
+};
+
+/**
+ * @param {object} options
+ * @param {string} options.domainId
+ * @param {DynamoDBDocumentClient} options.ddbClient
+ * @param {number} options.countDelta
+ * @param {number} options.indexDelta
+ * @param {Config} options.config
+ */
+export const updateDomainIndexMetadata = ({
+  domainId,
+  ddbClient,
+  config: { dynamodbTableName },
+  countDelta,
+  indexDelta,
+}) => {
+  return ddbClient.send(
+    new UpdateCommand({
+      TableName: dynamodbTableName,
+      Key: {
+        partition: "_domain",
+        sort: domainId,
+      },
+      UpdateExpression:
+        "SET #itemCount = #itemCount + :countDelta, " +
+        "#indexSize = #indexSize + :indexDelta",
+      ExpressionAttributeNames: {
+        "#itemCount": "itemCount",
+        "#indexSize": "indexSize",
+      },
+      ExpressionAttributeValues: {
+        ":countDelta": countDelta,
+        ":indexDelta": indexDelta,
+      },
+      ReturnValues: /** @type DynamoDBReturnValue */ ("ALL_NEW"),
+    }),
+  );
 };
 
 /**

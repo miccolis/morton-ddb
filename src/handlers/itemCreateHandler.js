@@ -1,7 +1,7 @@
 import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 import { buildTileIndex } from "../lib/geoIndex.js";
-import { getDomain } from "../lib/domains.js";
+import { getDomain, updateDomainIndexMetadata } from "../lib/domains.js";
 import { HttpError, parseJSONRequest, checkSession } from "../lib/helpers.js";
 
 /**
@@ -92,6 +92,15 @@ export const itemCreateHandler = async ({
   };
 
   await ddbClient.send(new BatchWriteCommand(commands));
+
+  await updateDomainIndexMetadata({
+    domainId,
+    config,
+    ddbClient,
+    countDelta: 1,
+    indexDelta: putRequests.length,
+  });
+
   return {
     domainId,
     itemId,

@@ -3,7 +3,7 @@ import {
   BatchWriteCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { getDomain } from "../lib/domains.js";
+import { getDomain, updateDomainIndexMetadata } from "../lib/domains.js";
 import { buildTileIndex } from "../lib/geoIndex.js";
 import {
   HttpError,
@@ -91,6 +91,7 @@ export const itemUpdateHandler = async ({
   }
 
   const indexUpdates = [];
+  let indexDelta = 0;
   if (fieldValues.geometry) {
     const newTiles = new Map();
     const deleteList = [];
@@ -111,6 +112,8 @@ export const itemUpdateHandler = async ({
         },
       }),
     );
+
+    indexDelta = newTiles.size - existingTiles.length;
 
     for (const v of existingTiles) {
       if (newTiles.has(v.morton)) {
@@ -142,13 +145,22 @@ export const itemUpdateHandler = async ({
   }
 
   try {
-    // It takes two commands to fully update a item when the geometry changes. First we update the
-    // item itself, then issue the creats and deletes to indexed records. There is a chance the
-    // that the later coule fail. In the future a method should be provided to force repair the
-    // index so that a item can be recovered without being deleted.
+    // It takes three commands to fully update a item when the geometry changes.
+    // First we update the item itself, then the index metadata & finally  issue
+    // the creates and deletes to indexed records. There is a chance the that
+    // the later could fail. In the future a method should be provided to force
+    // repair the index so that a item can be recovered without being deleted.
     const {
       Attributes: { type, properties, geometry, version },
     } = await ddbClient.send(new UpdateCommand(update));
+
+    await updateDomainIndexMetadata({
+      domainId,
+      config,
+      ddbClient,
+      countDelta: 0,
+      indexDelta,
+    });
 
     if (indexUpdates.length > 0) {
       /** @type BatchWriteCommandInput */

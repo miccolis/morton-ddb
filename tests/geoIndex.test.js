@@ -12,7 +12,7 @@ t.test("buildTileIndex - point", (t) => {
     },
   };
   const resp = buildTileIndex({ feature, zoom: 8 });
-  t.same(resp, [{ morton: "211106232532992", x: 128, y: 128 }]);
+  t.same(resp, [{ morton: 49152n, x: 128, y: 128 }]);
   t.end();
 });
 
@@ -31,18 +31,18 @@ t.test("buildTileIndex - line", (t) => {
 
   {
     const resp = buildTileIndex({ feature, zoom: 8 });
-    t.same(resp, [{ morton: "61869003898880", x: 75, y: 96 }]);
+    t.same(resp, [{ morton: 14405n, x: 75, y: 96 }]);
   }
   {
     const resp = buildTileIndex({ feature, zoom: 10 });
     t.same(resp, [
       {
-        morton: 61869003898880,
+        morton: 230480n,
         x: 300,
         y: 384,
       },
       {
-        morton: 61869540769792,
+        morton: 230482n,
         x: 300,
         y: 385,
       },
@@ -71,18 +71,18 @@ t.test("buildTileIndex - box", (t) => {
 
   {
     const resp = buildTileIndex({ feature, zoom: 8 });
-    t.same(resp, [{ morton: "61869003898880", x: 75, y: 96 }]);
+    t.same(resp, [{ morton: 14405n, x: 75, y: 96 }]);
   }
   {
     const resp = buildTileIndex({ feature, zoom: 9 });
     t.same(resp, [
       {
-        morton: 61869003898880,
+        morton: 57620n,
         x: 150,
         y: 192,
       },
       {
-        morton: 61870077640704,
+        morton: 57621n,
         x: 151,
         y: 192,
       },

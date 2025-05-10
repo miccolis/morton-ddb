@@ -62,6 +62,8 @@ export type Domain = {
   zoom: number;
   ttl?: number;
   version?: number;
+  itemCount?: number;
+  indexSize?: number;
   owners: string[];
 };
 

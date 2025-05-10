@@ -1,5 +1,5 @@
 import { QueryCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { getDomain } from "../lib/domains.js";
+import { getDomain, updateDomainIndexMetadata } from "../lib/domains.js";
 import { HttpError, checkSession } from "../lib/helpers.js";
 
 /**
@@ -58,6 +58,14 @@ export const itemDeleteHandler = async ({
       },
     }),
   );
+
+  await updateDomainIndexMetadata({
+    domainId,
+    ddbClient,
+    config,
+    countDelta: -1,
+    indexDelta: items.length,
+  });
 
   for (const { partition, sort } of items) {
     deleteRequests.push({ DeleteRequest: { Key: { partition, sort } } });

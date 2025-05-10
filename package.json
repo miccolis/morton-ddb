@@ -22,11 +22,11 @@
         "@aws-sdk/client-dynamodb": "^3.454.0",
         "@aws-sdk/lib-dynamodb": "^3.454.0",
         "@mapbox/tile-cover": "^3.0.2",
+        "@thi.ng/morton": "^3.1.113",
         "@turf/boolean-disjoint": "^6.5.0",
         "@turf/buffer": "^6.5.0",
         "bcryptjs": "^2.4.3",
         "jose": "^5.2.2",
-        "morton": "^1.0.2",
         "path-to-regexp": "^6.2.1",
         "tilebelt": "^1.0.1",
         "uuid": "^9.0.1"
