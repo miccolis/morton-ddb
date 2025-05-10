@@ -362,24 +362,27 @@
             }
         },
         "S3ResponseHeadersPolicy": {
-            "Type" : "AWS::CloudFront::ResponseHeadersPolicy",
-            "Properties" : {
-                "ResponseHeadersPolicyConfig" : {
-                    "Name" : {
-                        "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "s3-header-conf"]]
+            "Type": "AWS::CloudFront::ResponseHeadersPolicy",
+            "Properties": {
+                "ResponseHeadersPolicyConfig": {
+                    "Name": {
+                        "Fn::Join": [
+                            "-",
+                            [{ "Ref": "AWS::StackName" }, "s3-header-conf"]
+                        ]
                     },
-                    "Comment" : "Similar to SecurityHeadersPolicy - 67f7725c-6f97-4210-82d7-5512b31e9d03",
+                    "Comment": "Similar to SecurityHeadersPolicy - 67f7725c-6f97-4210-82d7-5512b31e9d03",
                     "SecurityHeadersConfig": {
                         "ContentSecurityPolicy": {
                             "ContentSecurityPolicy": "frame-ancestors 'none'; form-action 'self'",
                             "Override": false
                         },
-                        "ContentTypeOptions" : {
+                        "ContentTypeOptions": {
                             "Override": true
                         },
                         "ReferrerPolicy": {
-                          "Override" : false,
-                          "ReferrerPolicy" : "strict-origin-when-cross-origin"
+                            "Override": false,
+                            "ReferrerPolicy": "strict-origin-when-cross-origin"
                         },
                         "StrictTransportSecurity": {
                             "AccessControlMaxAgeSec": 31536000,
