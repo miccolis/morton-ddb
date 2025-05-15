@@ -37,7 +37,7 @@ export const itemCreateHandler = async ({
 
   const { properties, geometry, type } = parseJSONRequest(event);
   if (type != "Feature") {
-    throw new HttpError(400); // FeatureCollection is not supported
+    throw new HttpError(400, 'Only GeoJSON "Feature" is supported');
   }
 
   const { dynamodbTableName } = config;
@@ -80,25 +80,27 @@ export const itemCreateHandler = async ({
     putRequests.push({ PutRequest: { Item: v } });
   });
 
-  if (putRequests.length > 25) {
-    throw new HttpError(400);
+  if (putRequests.length > config.maxItemIndexSize) {
+    throw new HttpError(400, "Cannot index feature");
   }
 
-  /** @type BatchWriteCommandInput */
-  const commands = {
-    RequestItems: {
-      [dynamodbTableName]: putRequests,
-    },
-  };
-
-  await ddbClient.send(new BatchWriteCommand(commands));
+  for (let i = 0; i < putRequests.length; i += 25) {
+    /** @type BatchWriteCommandInput */
+    const commands = {
+      RequestItems: {
+        [dynamodbTableName]: putRequests.slice(i, i + 25),
+      },
+    };
+    // TODO UnprocessedItem handling
+    await ddbClient.send(new BatchWriteCommand(commands));
+  }
 
   await updateDomainIndexMetadata({
     domainId,
     config,
     ddbClient,
     countDelta: 1,
-    indexDelta: putRequests.length,
+    indexDelta: tiles.length,
   });
 
   return {

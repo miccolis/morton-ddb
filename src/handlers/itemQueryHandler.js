@@ -2,7 +2,11 @@ import { QueryCommand, BatchGetCommand } from "@aws-sdk/lib-dynamodb";
 import booleanDisjoint from "@turf/boolean-disjoint";
 import buffer from "@turf/buffer";
 
-import { HttpError, getCurrentUser } from "../lib/helpers.js";
+import {
+  HttpError,
+  getCurrentUser,
+  dynamoDBQueryFetchAll,
+} from "../lib/helpers.js";
 import { coordsToMorton } from "../lib/geoIndex.js";
 import { getDomain, validateDomainAccess } from "../lib/domains.js";
 
@@ -132,7 +136,8 @@ export const itemQueryHandler = async ({
   const topLeft = coordsToMorton(z, { x: bbox[0], y: bbox[3] });
   const bottomRight = coordsToMorton(z, { x: bbox[2], y: bbox[1] });
 
-  let { Items: hits } = await ddbClient.send(
+  const hits = await dynamoDBQueryFetchAll(
+    ddbClient,
     new QueryCommand({
       TableName: dynamodbTableName,
       IndexName: "QueryByZoom",

@@ -71,6 +71,22 @@ export function extractAllowedProperties(body, allowedKeys) {
 }
 
 /**
+ * @param {import('@aws-sdk/lib-dynamodb').DynamoDBDocumentClient} ddbClient
+ * @param {import('@aws-sdk/lib-dynamodb').QueryCommand} query
+ */
+export async function dynamoDBQueryFetchAll(ddbClient, query) {
+  let lastEvaluatedKey;
+  let ret = [];
+  do {
+    const { Items, LastEvaluatedKey } = await ddbClient.send(query);
+    ret = ret.concat(Items);
+    lastEvaluatedKey = LastEvaluatedKey;
+    query.input.ExclusiveStartKey = lastEvaluatedKey;
+  } while (lastEvaluatedKey);
+  return ret;
+}
+
+/**
  * @param {import('aws-lambda').APIGatewayProxyEventV2} event
  * @param {Uint8Array} jwtSecret
  */

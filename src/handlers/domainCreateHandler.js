@@ -14,7 +14,7 @@ export const domainCreateHandler = async ({
   const { sub: username } = await checkSession(event, jwtSecret);
 
   if (!/^[a-zA-Z0-9-]+$/.test(domainId)) {
-    throw new HttpError(400);
+    throw new HttpError(400, "invalid domain id");
   }
 
   const { name, zoom, access = "private", ttl = 0 } = parseJSONRequest(event);

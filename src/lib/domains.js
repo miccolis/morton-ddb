@@ -96,14 +96,14 @@ export function validateDomain(
     name.length > 64 ||
     name[0] === "_"
   ) {
-    throw new HttpError(400);
+    throw new HttpError(400, 'Property "name" a string');
   }
   if (
     !(access === undefined && allowPartial) &&
     access !== "public" &&
     access !== "private"
   ) {
-    throw new HttpError(400);
+    throw new HttpError(400, 'Property "access" must be "public" or "private"');
   }
   if (zoom !== undefined && !Number.isInteger(zoom) && zoom > 0 && zoom <= 24) {
     throw new HttpError(
@@ -112,7 +112,7 @@ export function validateDomain(
     );
   }
   if (ttl !== undefined && !Number.isInteger(ttl)) {
-    throw new HttpError(400);
+    throw new HttpError(400, 'Property "ttl" must be an integer value');
   }
   if (version !== undefined && !Number.isInteger(version)) {
     throw new HttpError(400, 'Property "version" must be an integer value');

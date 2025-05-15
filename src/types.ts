@@ -8,6 +8,7 @@ export type Config = {
     endpoint: string;
   };
   jwtSecret: Uint8Array;
+  maxItemIndexSize: number;
 };
 
 export type HttpMethod = "HEAD" | "GET" | "PUT" | "PATCH" | "POST" | "DELETE";

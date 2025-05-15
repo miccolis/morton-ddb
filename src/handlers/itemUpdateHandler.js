@@ -8,6 +8,7 @@ import { buildTileIndex } from "../lib/geoIndex.js";
 import {
   HttpError,
   parseJSONRequest,
+  dynamoDBQueryFetchAll,
   extractAllowedProperties,
   checkSession,
 } from "../lib/helpers.js";
@@ -100,7 +101,12 @@ export const itemUpdateHandler = async ({
       newTiles.set(v.morton, v);
     }
 
-    const { Items: existingTiles } = await ddbClient.send(
+    if (newTiles.size > config.maxItemIndexSize) {
+      throw new HttpError(400, "Cannot re-index feature");
+    }
+
+    const existingTiles = await dynamoDBQueryFetchAll(
+      ddbClient,
       new QueryCommand({
         TableName: dynamodbTableName,
         KeyConditionExpression: "#partition = :partition",
@@ -114,6 +120,10 @@ export const itemUpdateHandler = async ({
     );
 
     indexDelta = newTiles.size - existingTiles.length;
+
+    if (indexDelta > config.maxItemIndexSize) {
+      throw new HttpError(400, "Cannot re-index feature");
+    }
 
     for (const v of existingTiles) {
       if (newTiles.has(v.morton)) {
@@ -154,22 +164,27 @@ export const itemUpdateHandler = async ({
       Attributes: { type, properties, geometry, version },
     } = await ddbClient.send(new UpdateCommand(update));
 
-    await updateDomainIndexMetadata({
-      domainId,
-      config,
-      ddbClient,
-      countDelta: 0,
-      indexDelta,
-    });
+    if (indexDelta !== 0) {
+      await updateDomainIndexMetadata({
+        domainId,
+        config,
+        ddbClient,
+        countDelta: 0,
+        indexDelta,
+      });
+    }
 
     if (indexUpdates.length > 0) {
-      /** @type BatchWriteCommandInput */
-      const commands = {
-        RequestItems: {
-          [dynamodbTableName]: indexUpdates,
-        },
-      };
-      await ddbClient.send(new BatchWriteCommand(commands));
+      for (let i = 0; i < indexUpdates.length; i += 25) {
+        /** @type BatchWriteCommandInput */
+        const commands = {
+          RequestItems: {
+            [dynamodbTableName]: indexUpdates.slice(i, i + 25),
+          },
+        };
+        // TODO UnprocessedItem handling
+        await ddbClient.send(new BatchWriteCommand(commands));
+      }
     }
 
     return {

@@ -1,6 +1,10 @@
 import { QueryCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { getDomain, updateDomainIndexMetadata } from "../lib/domains.js";
-import { HttpError, checkSession } from "../lib/helpers.js";
+import {
+  HttpError,
+  checkSession,
+  dynamoDBQueryFetchAll,
+} from "../lib/helpers.js";
 
 /**
  * @typedef {import('@aws-sdk/lib-dynamodb').BatchWriteCommandInput} BatchWriteCommandInput
@@ -46,7 +50,8 @@ export const itemDeleteHandler = async ({
 
   const { dynamodbTableName } = config;
 
-  const { Items: items } = await ddbClient.send(
+  const items = await dynamoDBQueryFetchAll(
+    ddbClient,
     new QueryCommand({
       TableName: dynamodbTableName,
       KeyConditionExpression: "#partition = :partition",
@@ -59,14 +64,6 @@ export const itemDeleteHandler = async ({
     }),
   );
 
-  await updateDomainIndexMetadata({
-    domainId,
-    ddbClient,
-    config,
-    countDelta: -1,
-    indexDelta: items.length,
-  });
-
   for (const { partition, sort } of items) {
     deleteRequests.push({ DeleteRequest: { Key: { partition, sort } } });
   }
@@ -76,19 +73,28 @@ export const itemDeleteHandler = async ({
     throw new HttpError(404);
   }
 
-  if (deleteRequests.length > 25) {
+  if (deleteRequests.length > config.maxItemIndexSize) {
     throw new HttpError(500);
   }
 
-  /** @type BatchWriteCommandInput */
-  const commands = {
-    RequestItems: {
-      [dynamodbTableName]: deleteRequests,
-    },
-  };
+  await updateDomainIndexMetadata({
+    domainId,
+    ddbClient,
+    config,
+    countDelta: -1,
+    indexDelta: -items.length,
+  });
 
-  // TODO add UnprocessedItems handling
-  await ddbClient.send(new BatchWriteCommand(commands));
+  for (let i = 0; i < deleteRequests.length; i += 25) {
+    /** @type BatchWriteCommandInput */
+    const commands = {
+      RequestItems: {
+        [dynamodbTableName]: deleteRequests.slice(i, i + 25),
+      },
+    };
+    // TODO add UnprocessedItems handling
+    await ddbClient.send(new BatchWriteCommand(commands));
+  }
 
   return {};
 };
