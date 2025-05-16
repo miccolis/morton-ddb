@@ -183,6 +183,7 @@ t.test("handler - item lifecycle routes", async (t) => {
   const resp4 = await handler(
     asRequestContext("PATCH", `/app/d/${domainId}/item/${itemId}`, {
       version: 1,
+      type: "Feature",
       properties: {
         name: "Skull island",
       },

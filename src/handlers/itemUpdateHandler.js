@@ -53,11 +53,16 @@ export const itemUpdateHandler = async ({
     "properties",
     "geometry",
     "version",
+    "type",
   ]);
 
   // TODO better validation
 
-  const { version, ...fieldValues } = itemUpdates;
+  const { version, type, ...fieldValues } = itemUpdates;
+
+  if (type != "Feature") {
+    throw new HttpError(400, 'Only GeoJSON "Feature" is supported');
+  }
 
   if (!version) {
     throw new HttpError(400, 'Property "version" is required');

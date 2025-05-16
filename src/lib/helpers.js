@@ -65,7 +65,7 @@ export function extractAllowedProperties(body, allowedKeys) {
   }, {});
 
   if (Object.keys(body).length !== Object.keys(updates).length) {
-    throw new HttpError(400);
+    throw new HttpError(400, "Unsupported properties");
   }
   return updates;
 }
